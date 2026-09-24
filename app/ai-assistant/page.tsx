@@ -66,6 +66,10 @@ export default function AIAssistantPage() {
   const [age, setAge] = useState(10);
   const [topic, setTopic] = useState("Math");
   const [style, setStyle] = useState("Visual");
+  const [language, setLanguage] = useState<"en" | "ar">("en");
+  const [generatedLanguage, setGeneratedLanguage] = useState<"en" | "ar" | null>(
+    null,
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [plan, setPlan] = useState("");
   const [error, setError] = useState("");
@@ -105,8 +109,10 @@ export default function AIAssistantPage() {
         age,
         topic,
         style,
+        language,
       );
       setPlan(generatedPlan);
+      setGeneratedLanguage(language);
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
@@ -272,6 +278,28 @@ export default function AIAssistantPage() {
                 {error}
               </p>
             )}
+            <div className="mt-5 flex items-center justify-between gap-4 rounded-lg bg-[#eeeeee] px-5 py-3">
+              <label
+                className="flex cursor-pointer items-center gap-3 text-base font-medium text-[#333]"
+                htmlFor="plan-language"
+              >
+                <span>🌐 English / العربية</span>
+                <input
+                  id="plan-language"
+                  type="checkbox"
+                  checked={language === "ar"}
+                  onChange={(event) => {
+                    setLanguage(event.target.checked ? "ar" : "en");
+                  }}
+                  className="h-5 w-5 accent-[#a900eb]"
+                />
+              </label>
+              {plan && generatedLanguage !== language && (
+                <span className="text-sm text-[#7652c4]">
+                  Generate again to see the plan in the selected language.
+                </span>
+              )}
+            </div>
           </section>
 
           <section className="mt-16">
@@ -281,7 +309,10 @@ export default function AIAssistantPage() {
             <p className="mt-2 text-lg text-[#555]">
               Here is a personalized learning plan for the student.
             </p>
-            <div className="mt-8 min-h-32 rounded-xl bg-[#fafafa] p-8">
+            <div
+              className="mt-8 min-h-32 rounded-xl bg-[#fafafa] p-8"
+              dir={generatedLanguage === "ar" ? "rtl" : "ltr"}
+            >
               {isGenerating ? (
                 <div className="flex items-center gap-4 text-lg text-[#a20bed]" aria-live="polite">
                   <span className="h-7 w-7 animate-spin rounded-full border-4 border-[#d9b0ef] border-t-[#a900eb]" />

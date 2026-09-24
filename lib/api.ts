@@ -369,6 +369,7 @@ export async function generateLearningPlan(
   age: number,
   preferredTopic: string,
   learningStyle: string,
+  language: "en" | "ar",
 ): Promise<string> {
   if (!apiUrl) {
     throw new Error("AI service is not configured.");
@@ -386,6 +387,7 @@ export async function generateLearningPlan(
         age,
         preferred_topic: preferredTopic,
         learning_style: learningStyle,
+        language,
       }),
     });
   } catch {
