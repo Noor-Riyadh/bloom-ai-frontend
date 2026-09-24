@@ -1,18 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MarkdownContent } from "@/components/MarkdownContent";
 import { StudentPlaceholder } from "@/components/StudentPlaceholder";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { students, teacher } from "@/lib/mockData";
-
-const mockPlan = `## Personalized Plan
-
-This sample learning plan is tailored to the selected student. It will be replaced by the markdown response from Gemini, including learning insights, recommended resources, and a step-by-step plan.
-
-1. Review the student’s recent learning signals.
-2. Practice the preferred topic with a focused activity.
-3. Check progress and adjust the next learning step.`;
+import { generateLearningPlan, getTeacherStudents } from "@/lib/api";
+import { getCurrentAuthUser } from "@/lib/auth";
+import type { Student } from "@/lib/mockData";
 
 function SparkleHeadingIcon() {
   return (
@@ -61,20 +55,67 @@ function StudentRow({
 }
 
 export default function AIAssistantPage() {
-  const [selectedStudent, setSelectedStudent] = useState(students[0]?.name ?? "");
+  const [teacherName] = useState(() => getCurrentAuthUser()?.name ?? "");
+  const [students, setStudents] = useState<Student[]>([]);
+  const [isLoadingStudents, setIsLoadingStudents] = useState(Boolean(teacherName));
+  const [studentLoadError, setStudentLoadError] = useState(
+    () => (teacherName ? "" : "Could not identify the logged-in teacher."),
+  );
+  const [selectedStudent, setSelectedStudent] = useState("");
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
   const [age, setAge] = useState(10);
   const [topic, setTopic] = useState("Math");
   const [style, setStyle] = useState("Visual");
   const [isGenerating, setIsGenerating] = useState(false);
   const [plan, setPlan] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!teacherName) return;
+
+    let active = true;
+    void getTeacherStudents(teacherName)
+      .then((data) => {
+        if (!active) return;
+        setStudents(data);
+        setSelectedStudent(data[0]?.name ?? "");
+      })
+      .catch(() => {
+        if (active) setStudentLoadError("Could not load student data");
+      })
+      .finally(() => {
+        if (active) setIsLoadingStudents(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [teacherName]);
 
   async function generatePlan() {
+    if (!selectedStudent) return;
+
     setIsGenerating(true);
     setPlan("");
-    await new Promise((resolve) => window.setTimeout(resolve, 1500));
-    setPlan(mockPlan);
-    setIsGenerating(false);
+    setError("");
+
+    try {
+      const generatedPlan = await generateLearningPlan(
+        selectedStudent,
+        age,
+        topic,
+        style,
+      );
+      setPlan(generatedPlan);
+    } catch (caughtError) {
+      setError(
+        caughtError instanceof Error
+          ? caughtError.message
+          : "Could not generate a learning plan. Please try again.",
+      );
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   return (
@@ -99,7 +140,7 @@ export default function AIAssistantPage() {
 
           <div className="my-10 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <p className="rounded-lg bg-[#eeeeee] px-6 py-4 text-center text-base">
-            You are logged in as <strong>{teacher.name}</strong>. You can
+            You are logged in as <strong>{teacherName || "—"}</strong>. You can
             generate plans only for your assigned students.
           </p>
 
@@ -110,30 +151,46 @@ export default function AIAssistantPage() {
             >
               Select Student
             </label>
-            <select
-              id="ai-student-select"
-              value={selectedStudent}
-              onChange={(event) => setSelectedStudent(event.target.value)}
-              className="h-12 w-full appearance-none rounded-xl border-2 border-transparent bg-[linear-gradient(white,white)_padding-box,linear-gradient(90deg,#ff851b,#d13be8)_border-box] px-6 text-base outline-none"
-            >
-              {students.map((student) => (
-                <option key={student.name}>{student.name}</option>
-              ))}
-            </select>
-            <div className="mt-8 space-y-3">
-              {students.map((student) => (
-                <StudentRow
-                  key={student.name}
-                  name={student.name}
-                  expanded={expandedStudent === student.name}
-                  onToggle={() =>
-                    setExpandedStudent((current) =>
-                      current === student.name ? null : student.name,
-                    )
-                  }
-                />
-              ))}
-            </div>
+            {isLoadingStudents ? (
+              <p className="rounded-lg bg-[#eeeeee] px-5 py-4 text-center text-base text-[#a20bed]">
+                Loading your assigned students...
+              </p>
+            ) : studentLoadError ? (
+              <p className="rounded-lg bg-[#fff0f0] px-5 py-4 text-center text-base text-[#a00000]" role="alert">
+                {studentLoadError}
+              </p>
+            ) : students.length === 0 ? (
+              <p className="rounded-lg bg-[#eeeeee] px-5 py-4 text-center text-base text-[#555]">
+                No students are assigned to this account.
+              </p>
+            ) : (
+              <>
+                <select
+                  id="ai-student-select"
+                  value={selectedStudent}
+                  onChange={(event) => setSelectedStudent(event.target.value)}
+                  className="h-12 w-full appearance-none rounded-xl border-2 border-transparent bg-[linear-gradient(white,white)_padding-box,linear-gradient(90deg,#ff851b,#d13be8)_border-box] px-6 text-base outline-none"
+                >
+                  {students.map((student) => (
+                    <option key={student.name}>{student.name}</option>
+                  ))}
+                </select>
+                <div className="mt-8 space-y-3">
+                  {students.map((student) => (
+                    <StudentRow
+                      key={student.name}
+                      name={student.name}
+                      expanded={expandedStudent === student.name}
+                      onToggle={() =>
+                        setExpandedStudent((current) =>
+                          current === student.name ? null : student.name,
+                        )
+                      }
+                    />
+                  ))}
+                </div>
+              </>
+            )}
           </section>
 
           <div className="my-12 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
@@ -198,11 +255,23 @@ export default function AIAssistantPage() {
             <button
               type="button"
               onClick={generatePlan}
-              disabled={isGenerating}
+              disabled={isGenerating || isLoadingStudents || !selectedStudent}
               className="mt-8 h-14 w-full rounded-xl bg-gradient-to-r from-[#ff851b] via-[#f84e98] to-[#a900f5] text-sm font-bold uppercase text-white transition hover:brightness-105 disabled:cursor-wait disabled:opacity-70"
             >
-              {isGenerating ? "Generating..." : "Generate Personalized Learning Plans"}
+              {isGenerating
+                ? "Generating..."
+                : error
+                  ? "Retry Generation"
+                  : "Generate Personalized Learning Plans"}
             </button>
+            {error && (
+              <p
+                className="mt-4 rounded-lg bg-[#fff0f0] px-5 py-4 text-center text-base text-[#a00000]"
+                role="alert"
+              >
+                {error}
+              </p>
+            )}
           </section>
 
           <section className="mt-16">
@@ -216,7 +285,7 @@ export default function AIAssistantPage() {
               {isGenerating ? (
                 <div className="flex items-center gap-4 text-lg text-[#a20bed]" aria-live="polite">
                   <span className="h-7 w-7 animate-spin rounded-full border-4 border-[#d9b0ef] border-t-[#a900eb]" />
-                  Generating a plan...
+                  Generating your personalized plan...
                 </div>
               ) : plan ? (
                 <MarkdownContent content={plan} />

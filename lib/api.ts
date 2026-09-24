@@ -267,3 +267,55 @@ export async function getSchoolStudents(schoolName: string): Promise<{
     }),
   };
 }
+
+export async function generateLearningPlan(
+  studentName: string,
+  age: number,
+  preferredTopic: string,
+  learningStyle: string,
+): Promise<string> {
+  if (!apiUrl) {
+    throw new Error("AI service is not configured.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`${apiUrl}/ai-assistant/generate-plan`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        student_name: studentName,
+        age,
+        preferred_topic: preferredTopic,
+        learning_style: learningStyle,
+      }),
+    });
+  } catch {
+    throw new Error(
+      "Could not connect to the AI service. Please try again.",
+    );
+  }
+
+  const payload = (await response.json().catch(() => null)) as
+    | { success?: boolean; plan?: unknown; detail?: string }
+    | null;
+
+  if (!response.ok) {
+    throw new Error(
+      payload?.detail || "Could not generate a learning plan. Please try again.",
+    );
+  }
+
+  if (
+    !payload ||
+    payload.success !== true ||
+    typeof payload.plan !== "string" ||
+    !payload.plan.trim()
+  ) {
+    throw new Error("The AI service returned an invalid learning plan.");
+  }
+
+  return payload.plan;
+}
