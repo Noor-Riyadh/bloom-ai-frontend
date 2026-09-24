@@ -30,6 +30,11 @@ export interface StudentProfile {
   participation_score: number;
 }
 
+export interface ParentProfile {
+  name: string;
+  children: StudentProfile[];
+}
+
 export const teacher: Teacher = {
   name: "Mr. Ahmed Khaled",
 };
@@ -47,6 +52,11 @@ export const studentProfile: StudentProfile = {
   final_exam_score: 78,
   midterm_score: 52,
   participation_score: 67,
+};
+
+export const parentProfile: ParentProfile = {
+  name: "Adham Ali's Mother",
+  children: [studentProfile],
 };
 
 export const students: Student[] = [
