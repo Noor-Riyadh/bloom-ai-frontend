@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useState } from "react";
-import { teacher } from "@/lib/mockData";
+import { studentProfile, teacher } from "@/lib/mockData";
 import { BloomMark } from "./BloomMark";
 
 function NavIcon({ children }: { children: ReactNode }) {
@@ -62,8 +62,14 @@ function ChangeRoleIcon() {
   );
 }
 
-export function TeacherSidebar() {
+interface TeacherSidebarProps {
+  role?: "teacher" | "student";
+}
+
+export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
+  const isStudent = role === "student";
+  const accountName = isStudent ? studentProfile.name : teacher.name;
 
   return (
     <aside
@@ -98,11 +104,11 @@ export function TeacherSidebar() {
           <div className="space-y-5 text-sm text-white/90">
             <p>
               <span className="font-semibold">Role</span>
-              <span className="text-white/60"> : Teacher</span>
+              <span className="text-white/60"> : {isStudent ? "Student" : "Teacher"}</span>
             </p>
             <p className="leading-5">
               <span className="font-semibold">Account</span>
-              <span className="text-white/60"> : {teacher.name}</span>
+              <span className="text-white/60"> : {accountName}</span>
             </p>
           </div>
         </div>
@@ -119,13 +125,13 @@ export function TeacherSidebar() {
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
             }`}
-            href="/home"
+            href={isStudent ? "/student/home" : "/home"}
             title={collapsed ? "Home" : undefined}
           >
             <NavIcon><HomeIcon /></NavIcon>
             {!collapsed && "Home"}
           </Link>
-          <Link
+          {!isStudent && <Link
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
             }`}
@@ -134,8 +140,8 @@ export function TeacherSidebar() {
           >
             <NavIcon><StudentIcon /></NavIcon>
             {!collapsed && "Student"}
-          </Link>
-          <Link
+          </Link>}
+          {!isStudent && <Link
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
             }`}
@@ -144,8 +150,18 @@ export function TeacherSidebar() {
           >
             <NavIcon><DashboardIcon /></NavIcon>
             {!collapsed && "Dashboard"}
-          </Link>
-          <Link
+          </Link>}
+          {isStudent && <Link
+            className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
+              collapsed ? "justify-center" : "gap-4"
+            }`}
+            href="/student/my-learning"
+            title={collapsed ? "My Learning" : undefined}
+          >
+            <NavIcon><DashboardIcon /></NavIcon>
+            {!collapsed && "My Learning"}
+          </Link>}
+          {!isStudent && <Link
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
             }`}
@@ -154,7 +170,7 @@ export function TeacherSidebar() {
           >
             <NavIcon><SparkleIcon /></NavIcon>
             {!collapsed && "AI Assistant"}
-          </Link>
+          </Link>}
         </div>
       </nav>
 

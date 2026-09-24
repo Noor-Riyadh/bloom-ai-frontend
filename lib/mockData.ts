@@ -15,8 +15,38 @@ export interface Student {
   performance_level: PerformanceLevel;
 }
 
+export interface StudentProfile {
+  name: string;
+  class_name: string;
+  teacher_name: string;
+  school_name: string;
+  overall_score: number;
+  attendance_percentage: number;
+  study_hours_per_day: number;
+  performance_level: PerformanceLevel;
+  assignment_score: number;
+  final_exam_score: number;
+  midterm_score: number;
+  participation_score: number;
+}
+
 export const teacher: Teacher = {
   name: "Mr. Ahmed Khaled",
+};
+
+export const studentProfile: StudentProfile = {
+  name: "Adham Ali",
+  class_name: "5B",
+  teacher_name: teacher.name,
+  school_name: "Nile Future School",
+  overall_score: 77.1,
+  attendance_percentage: 44,
+  study_hours_per_day: 6.9,
+  performance_level: "Good",
+  assignment_score: 90,
+  final_exam_score: 78,
+  midterm_score: 52,
+  participation_score: 67,
 };
 
 export const students: Student[] = [
