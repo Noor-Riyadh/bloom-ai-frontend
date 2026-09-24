@@ -1,6 +1,7 @@
  "use client";
 
-import { useEffect, useState } from "react";
+ import Image from "next/image";
+ import { useEffect, useState } from "react";
 import { TeacherMetricCards } from "@/components/TeacherMetricCards";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
 import { getSchoolStudents } from "@/lib/api";
@@ -37,18 +38,21 @@ export default function AdminDashboardPage() {
       <TeacherSidebar role="admin" />
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1100px]">
-          <header className="flex items-center gap-20">
-            <div className="w-60 text-[#a900eb]">
-              <svg viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
-                <path d="M12 15h76v70H12V15Zm10 10v18h56V25H22Zm0 28v22h56V53H22Zm10-22h8v8h-8v-8Zm16 0h8v8h-8v-8Zm16 0h8v8h-8v-8ZM32 62h8v8h-8v-8Zm16 0h8v8h-8v-8Zm16 0h8v8h-8v-8Z" />
-              </svg>
-            </div>
+          <header className="flex items-center gap-16">
+            <Image
+              src="/icons/ParentDashboardicon1.png"
+              alt=""
+              width={160}
+              height={160}
+              className="h-40 w-40 object-contain"
+              aria-hidden="true"
+            />
             <div>
-              <div className="mb-7 h-3 w-36 bg-[#b20cf0]" />
-              <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
+              <div className="mb-4 h-2 w-24 bg-[#b20cf0]" />
+              <h1 className="text-4xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
                 School Dashboard
               </h1>
-              <p className="mt-5 text-lg">
+              <p className="mt-4 text-base">
                 Showing students from                 <strong>{schoolName || "—"}</strong> only.
               </p>
             </div>
@@ -62,7 +66,7 @@ export default function AdminDashboardPage() {
           ) : error ? (
             <p className="py-20 text-center text-lg text-[#d83364]">{error}</p>
           ) : (
-            <TeacherMetricCards students={students} compact />
+            <TeacherMetricCards students={students} compact useImageIcons />
           )}
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />

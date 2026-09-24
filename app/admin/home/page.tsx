@@ -1,7 +1,7 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
-import { StudentPlaceholder } from "@/components/StudentPlaceholder";
 import { TeacherMetricCards } from "@/components/TeacherMetricCards";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
 import { getSchoolStudents } from "@/lib/api";
@@ -35,7 +35,15 @@ export default function AdminHomePage() {
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1050px]">
           <header className="flex items-center gap-24">
-            <StudentPlaceholder large />
+            <div className="relative h-44 w-[280px] shrink-0">
+              <Image
+                src="/icons/building.png"
+                alt="City skyline illustration"
+                fill
+                sizes="280px"
+                className="object-contain"
+              />
+            </div>
             <div>
               <div className="mb-8 h-3 w-36 bg-[#b20cf0]" />
               <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
@@ -58,7 +66,7 @@ export default function AdminHomePage() {
           ) : error ? (
             <p className="py-20 text-center text-lg text-[#d83364]">{error}</p>
           ) : (
-            <TeacherMetricCards students={students} />
+            <TeacherMetricCards students={students} useImageIcons />
           )}
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-base font-medium">

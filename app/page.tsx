@@ -140,10 +140,10 @@ export default function Home() {
           <BloomLogo />
           <div>
             <div className="mb-[14px] h-[6px] w-[56px] bg-[#bd0cf4]" />
-            <h1 className="font-sans text-[40px] font-extrabold leading-[0.9] tracking-[-2px] text-[#a30bed]">
+            <h1 className="font-sans text-[44px] font-extrabold leading-[0.9] tracking-[-2px] text-[#a30bed]">
               Welcome
             </h1>
-            <p className="font-sans text-[40px] font-extrabold leading-[0.9] tracking-[-2px]">
+            <p className="font-sans text-[44px] font-extrabold leading-[0.9] tracking-[-2px]">
               To Bloom
             </p>
           </div>
@@ -157,7 +157,7 @@ export default function Home() {
         >
           {isSignup && (
             <label className="flex flex-col gap-[8px]">
-              <span className="text-center text-[15px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
+              <span className="text-center text-[16px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
                 Your name
               </span>
               <input
@@ -166,13 +166,13 @@ export default function Home() {
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 placeholder="Enter your full name"
-                className="h-[31px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[14px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
+                className="h-[36px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[15px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
               />
             </label>
           )}
 
           <label className="flex flex-col gap-[8px]">
-            <span className="text-center text-[15px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
+            <span className="text-center text-[16px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
               Email
             </span>
             <input
@@ -181,12 +181,12 @@ export default function Home() {
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               placeholder="Enter your email"
-              className="h-[31px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[14px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
+              className="h-[36px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[15px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
             />
           </label>
 
           <label className="flex flex-col gap-[8px]">
-            <span className="text-center text-[15px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
+            <span className="text-center text-[16px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
               Password
             </span>
             <input
@@ -196,20 +196,20 @@ export default function Home() {
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               placeholder="Enter your password"
-              className="h-[31px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[14px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
+              className="h-[36px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[15px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
             />
           </label>
 
           {isSignup && (
             <label className="flex flex-col gap-[8px]">
-              <span className="text-center text-[15px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
+              <span className="text-center text-[16px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
                 Choose your role
               </span>
               <select
                 required
                 value={role}
                 onChange={(event) => setRole(event.target.value as UserRole)}
-                className="h-[31px] appearance-none rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[14px] font-medium outline-none focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
+                className="h-[36px] appearance-none rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[15px] font-medium outline-none focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
               >
                 {roles.map((option) => (
                   <option key={option.value} value={option.value}>
@@ -223,7 +223,7 @@ export default function Home() {
           {(error || success) && (
             <p
               aria-live="polite"
-              className={`text-center text-[13px] font-medium ${
+              className={`text-center text-[14px] font-medium ${
                 error ? "text-[#d83364]" : "text-[#568500]"
               }`}
             >
@@ -234,7 +234,7 @@ export default function Home() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-[5px] h-[31px] rounded-[8px] bg-gradient-to-r from-[#ff851b] via-[#f84e98] to-[#a900f5] text-[12px] font-bold uppercase text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#d64cf1] focus:ring-offset-2 disabled:cursor-wait disabled:opacity-70"
+            className="mt-[5px] h-[36px] rounded-[8px] bg-gradient-to-r from-[#ff851b] via-[#f84e98] to-[#a900f5] text-[13px] font-bold uppercase text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#d64cf1] focus:ring-offset-2 disabled:cursor-wait disabled:opacity-70"
           >
             {isSubmitting ? "Please wait..." : isSignup ? "Sign Up" : "Continue"}
           </button>
@@ -242,7 +242,7 @@ export default function Home() {
 
         {!isSignup && (
           <section className="mt-[26px] border-t border-[#ead7f4] pt-[18px]">
-            <p className="text-center text-[12px] font-semibold uppercase tracking-[0.5px] text-[#777]">
+            <p className="text-center text-[13px] font-semibold uppercase tracking-[0.5px] text-[#777]">
               Demo Accounts
             </p>
             <div className="mt-[12px] grid grid-cols-4 gap-2">
@@ -257,7 +257,7 @@ export default function Home() {
                       account.password,
                     )
                   }
-                  className="min-h-[36px] rounded-[8px] border border-[#d9b6ea] bg-[#fcf8ff] px-2 py-1 text-[11px] font-semibold leading-tight text-[#8b10c6] transition hover:border-[#a400ff] hover:bg-[#f4e6ff] focus:outline-none focus:ring-2 focus:ring-[#d64cf1] disabled:cursor-wait disabled:opacity-60"
+                  className="min-h-[40px] rounded-[8px] border border-[#d9b6ea] bg-[#fcf8ff] px-2 py-1 text-[12px] font-semibold leading-tight text-[#8b10c6] transition hover:border-[#a400ff] hover:bg-[#f4e6ff] focus:outline-none focus:ring-2 focus:ring-[#d64cf1] disabled:cursor-wait disabled:opacity-60"
                 >
                   {account.label}
                 </button>
@@ -266,7 +266,7 @@ export default function Home() {
           </section>
         )}
 
-        <p className="mt-[19px] text-center text-[14px] text-[#555]">
+        <p className="mt-[19px] text-center text-[15px] text-[#555]">
           {isSignup ? "Already have an account?" : "New to Bloom?"}{" "}
           <button
             type="button"
