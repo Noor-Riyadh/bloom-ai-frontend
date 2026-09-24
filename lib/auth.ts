@@ -11,39 +11,98 @@ export interface AuthResponse {
   user: AuthUser;
 }
 
-const mockDelay = (milliseconds = 450) =>
-  new Promise<void>((resolve) => {
-    window.setTimeout(resolve, milliseconds);
-  });
-
-export async function loginUser(
-  email: string,
-  _password: string,
-): Promise<AuthResponse> {
-  void _password;
-  await mockDelay();
-
-  return {
-    success: true,
-    user: {
-      name: email.split("@")[0] || "Bloom user",
-      email,
-      role: "student",
-    },
-  };
+interface AuthErrorPayload {
+  detail?: string;
+  message?: string;
+  error?: string;
 }
 
-export async function signupUser(
+function isAuthResponse(value: unknown): value is AuthResponse {
+  if (!value || typeof value !== "object") return false;
+
+  const response = value as Partial<AuthResponse>;
+  return (
+    response.success === true &&
+    !!response.user &&
+    typeof response.user.name === "string" &&
+    typeof response.user.email === "string" &&
+    typeof response.user.role === "string"
+  );
+}
+
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+async function requestAuth(
+  endpoint: "login" | "signup",
+  payload: Record<string, string>,
+): Promise<AuthResponse> {
+  if (!apiUrl) {
+    throw new Error(
+      "Authentication is not configured. Please set NEXT_PUBLIC_API_URL.",
+    );
+  }
+
+  let response: Response;
+
+  try {
+    response = await fetch(`${apiUrl}/auth/${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+  } catch {
+    throw new Error(
+      "Unable to connect to the authentication server. Please try again.",
+    );
+  }
+
+  const data = (await response.json().catch(() => null)) as
+    | AuthResponse
+    | AuthErrorPayload
+    | null;
+
+  if (!response.ok) {
+    const errorMessage =
+      data && "detail" in data
+        ? data.detail
+        : data && "message" in data
+          ? data.message
+          : data && "error" in data
+            ? data.error
+            : undefined;
+
+    if (response.status === 401) {
+      throw new Error(errorMessage || "Invalid email or password.");
+    }
+
+    if (response.status === 400) {
+      throw new Error(errorMessage || "Please check your information and try again.");
+    }
+
+    throw new Error(errorMessage || "Authentication failed. Please try again.");
+  }
+
+  if (!isAuthResponse(data)) {
+    throw new Error("The authentication server returned an invalid response.");
+  }
+
+  return data;
+}
+
+export function loginUser(
+  email: string,
+  password: string,
+): Promise<AuthResponse> {
+  return requestAuth("login", { email, password });
+}
+
+export function signupUser(
   name: string,
   email: string,
-  _password: string,
+  password: string,
   role: UserRole,
 ): Promise<AuthResponse> {
-  void _password;
-  await mockDelay();
-
-  return {
-    success: true,
-    user: { name, email, role },
-  };
+  return requestAuth("signup", { name, email, password, role });
 }
