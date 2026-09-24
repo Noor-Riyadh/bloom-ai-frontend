@@ -33,7 +33,7 @@ export default function StudentHomePage() {
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1050px]">
           <header className="flex items-center gap-24">
-            <StudentPlaceholder large />
+            <StudentPlaceholder large name={profile?.name} />
             <div>
               <div className="mb-8 h-3 w-36 bg-[#b20cf0]" />
               <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">

@@ -37,7 +37,7 @@ export default function ParentHomePage() {
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1050px]">
           <header className="flex items-center gap-24">
-            <StudentPlaceholder large />
+            <StudentPlaceholder large name={children[0]?.name} />
             <div>
               <div className="mb-8 h-3 w-36 bg-[#b20cf0]" />
               <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
@@ -57,7 +57,7 @@ export default function ParentHomePage() {
           ) : error ? (
             <p className="py-20 text-center text-lg text-[#d83364]">{error}</p>
           ) : (
-            <ParentMetricCards childRecords={children} />
+            <ParentMetricCards childRecords={children} useImageIcons />
           )}
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-base font-medium">

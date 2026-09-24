@@ -48,7 +48,7 @@ export default function TeacherHomePage() {
           ) : error ? (
             <p className="py-20 text-center text-xl text-[#d83364]">{error}</p>
           ) : (
-            <TeacherMetricCards students={students} />
+            <TeacherMetricCards students={students} useImageIcons />
           )}
           <div className="my-10 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <p className="rounded-md bg-[#f0f0f0] px-5 py-2 text-center text-sm font-medium text-[#333]">

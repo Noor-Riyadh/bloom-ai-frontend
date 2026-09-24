@@ -7,6 +7,7 @@ import { TeacherSidebar } from "@/components/TeacherSidebar";
 import { getParentChildren } from "@/lib/api";
 import { getCurrentAuthUser } from "@/lib/auth";
 import type { ParentChild } from "@/lib/mockData";
+import Image from "next/image";
 
 function DetailIcon({ type }: { type: "class" | "teacher" | "school" }) {
   if (type === "class") return <StudentMetricIcon type="study" />;
@@ -53,18 +54,21 @@ export default function ParentDashboardPage() {
       <TeacherSidebar role="parent" />
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1240px]">
-          <header className="flex items-center gap-24">
-            <div className="w-[280px] text-[#a900eb]">
-              <svg viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
-                <path d="M12 15h76v70H12V15Zm10 10v18h56V25H22Zm0 28v22h56V53H22Zm10-22h8v8h-8v-8Zm16 0h8v8h-8v-8Zm16 0h8v8h-8v-8ZM32 62h8v8h-8v-8Zm16 0h8v8h-8v-8Zm16 0h8v8h-8v-8Z" />
-              </svg>
-            </div>
+          <header className="flex items-center gap-16">
+            <Image
+              src="/icons/ParentDashboardicon1.png"
+              alt=""
+              width={160}
+              height={160}
+              className="h-40 w-40 object-contain"
+              aria-hidden="true"
+            />
             <div>
-              <div className="mb-7 h-3 w-36 bg-[#b20cf0]" />
-              <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
+              <div className="mb-4 h-2 w-24 bg-[#b20cf0]" />
+              <h1 className="text-4xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
                 Parent Dashboard
               </h1>
-              <p className="mt-5 text-lg">
+              <p className="mt-4 text-base">
                 Showing only the children linked to{" "}
                 <strong>{parent?.name ?? "—"}</strong>
               </p>
@@ -73,9 +77,16 @@ export default function ParentDashboardPage() {
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
 
-          <section className="flex items-center gap-12 px-12">
-            <div className="flex h-56 w-56 items-center justify-center rounded-3xl bg-gradient-to-br from-[#a900f5] to-[#a400e8] text-white shadow-[3px_5px_5px_rgba(0,0,0,0.22)]">
-              <StudentMetricIcon type="score" />
+          <section className="flex items-center gap-8 px-8">
+            <div className="flex h-32 w-32 items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br from-[#a900f5] to-[#a400e8] text-white shadow-[3px_5px_5px_rgba(0,0,0,0.22)]">
+              <Image
+                src="/icons/students-icon.png"
+                alt=""
+                width={88}
+                height={88}
+                className="rounded-xl object-cover"
+                aria-hidden="true"
+              />
             </div>
             <div>
               <p className="text-lg">
@@ -123,7 +134,7 @@ export default function ParentDashboardPage() {
                     >
                       ›
                     </span>
-                    <StudentPlaceholder />
+                    <StudentPlaceholder name={child.name} />
                     <span className="text-2xl font-medium">{child.name}</span>
                   </button>
 
@@ -137,7 +148,7 @@ export default function ParentDashboardPage() {
                     <div className="min-h-0 overflow-hidden bg-[#f1f1f1] text-[#111]">
                       <div className="border-b-8 border-[#a900eb] bg-[#a900eb] px-12 py-5">
                         <div className="flex items-center gap-6">
-                          <StudentPlaceholder large />
+                          <StudentPlaceholder large name={child.name} />
                           <span className="text-2xl font-semibold text-white">
                             {child.name}
                           </span>

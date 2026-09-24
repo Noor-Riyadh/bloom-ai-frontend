@@ -49,7 +49,7 @@ function StudentRow({
       >
         ›
       </span>
-      <StudentPlaceholder />
+      <StudentPlaceholder name={name} />
       <span className="text-xl font-medium">{name}</span>
     </button>
   );

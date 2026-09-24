@@ -10,13 +10,10 @@ export function TeacherPageHeader({
   compact = false,
 }: TeacherPageHeaderProps) {
   return (
-    <header className="flex items-center gap-24">
+    <header className="flex items-center gap-0">
       <div
-        className={`rounded-xl border-2 border-transparent bg-[linear-gradient(white,white)_padding-box,linear-gradient(135deg,#ff851b,#d13be8)_border-box] ${
-          compact ? "h-40 w-40" : "h-[210px] w-[210px]"
-        }`}
       />
-      <div>
+      <div className="text-left">
         <div className={`h-2 w-24 bg-[#b20cf0] ${compact ? "mb-4" : "mb-6"}`} />
         <h1
           className={`font-extrabold leading-none text-[#a20bed] ${

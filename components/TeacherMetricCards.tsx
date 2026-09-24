@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { AdminStudent, Student } from "@/lib/mockData";
 
 type MetricIcon = "students" | "score" | "risk" | "attendance";
@@ -40,9 +41,11 @@ function MetricIcon({ type }: { type: MetricIcon }) {
 export function TeacherMetricCards({
   students,
   compact = false,
+  useImageIcons = false,
 }: {
   students: Array<Student | AdminStudent>;
   compact?: boolean;
+  useImageIcons?: boolean;
 }) {
   const average = (values: number[]) =>
     values.length === 0
@@ -86,7 +89,26 @@ export function TeacherMetricCards({
               compact ? "h-[128px] w-[128px]" : "h-[116px] w-[116px]"
             }`}
           >
-            <MetricIcon type={metric.icon} />
+            {useImageIcons ? (
+              <Image
+                src={`/icons/${
+                  metric.icon === "students"
+                    ? "students-icon.png"
+                    : metric.icon === "score"
+                      ? "score-icon.png"
+                      : metric.icon === "risk"
+                        ? "at-risk-icon.png"
+                        : "attendance-icon.png"
+                }`}
+                alt=""
+                width={88}
+                height={88}
+                className="rounded-xl object-cover"
+                aria-hidden="true"
+              />
+            ) : (
+              <MetricIcon type={metric.icon} />
+            )}
           </div>
           <p className={`mt-3 text-[#111] ${compact ? "text-base" : "text-sm"}`}>
             {metric.label}:{" "}

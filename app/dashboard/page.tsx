@@ -13,6 +13,7 @@ import {
 import { TeacherMetricCards } from "@/components/TeacherMetricCards";
 import { TeacherPageHeader } from "@/components/TeacherPageHeader";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
+import { StudentPlaceholder } from "@/components/StudentPlaceholder";
 import { getTeacherStudents } from "@/lib/api";
 import { getCurrentAuthUser } from "@/lib/auth";
 import { getPerformanceDistribution, type Student } from "@/lib/mockData";
@@ -62,7 +63,7 @@ export default function TeacherDashboardPage() {
           ) : error ? (
             <p className="py-20 text-center text-xl text-[#d83364]">{error}</p>
           ) : (
-            <TeacherMetricCards students={students} compact />
+            <TeacherMetricCards students={students} compact useImageIcons />
           )}
 
           <div className="my-10 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
@@ -87,7 +88,7 @@ export default function TeacherDashboardPage() {
                     {students.map((student) => (
                       <tr className="border-b border-[#d8d8d8]" key={student.name}>
                         <td className="flex items-center gap-4 px-5 py-4 font-medium">
-                          <div className="h-12 w-12 rounded-xl border-2 border-[#a900eb] bg-gradient-to-br from-[#ffd0b0] via-[#f2a5b7] to-[#8f66cc]" />
+                          <StudentPlaceholder name={student.name} variant="compact" />
                           {student.name}
                         </td>
                         <td className="px-5 py-4">{student.class_name ?? "—"}</td>

@@ -228,7 +228,7 @@ export default function StudentAssignmentsPage() {
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1050px]">
           <header className="flex items-center gap-8">
-            <StudentPlaceholder large />
+            <StudentPlaceholder large name={studentName} />
             <div>
               <div className="mb-4 h-2 w-24 bg-[#b20cf0]" />
               <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">

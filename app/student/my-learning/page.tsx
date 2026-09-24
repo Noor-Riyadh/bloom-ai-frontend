@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   Bar,
@@ -17,16 +18,14 @@ import { getStudentProfile } from "@/lib/api";
 import { getCurrentAuthUser } from "@/lib/auth";
 import type { StudentProfile } from "@/lib/mockData";
 
-function BookIcon() {
-  return (
-    <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" strokeWidth="4" aria-hidden="true">
-      <path d="M10 14h25c9 0 15 6 15 15v37H25c-8 0-15-6-15-14V14Zm60 0H45c-9 0-15 6-15 15v37h25c8 0 15-6 15-14V14Z" />
-    </svg>
-  );
-}
-
 function InfoIcon({ type }: { type: "class" | "teacher" | "school" }) {
-  if (type === "class") return <BookIcon />;
+  if (type === "class") {
+    return (
+      <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" strokeWidth="4" aria-hidden="true">
+        <path d="M10 14h25c9 0 15 6 15 15v37H25c-8 0-15-6-15-14V14Zm60 0H45c-9 0-15 6-15 15v37h25c8 0 15-6 15-14V14Z" />
+      </svg>
+    );
+  }
   if (type === "teacher") return <StudentMetricIcon type="score" />;
   return (
     <svg viewBox="0 0 80 80" fill="none" stroke="currentColor" strokeWidth="4" aria-hidden="true">
@@ -70,9 +69,14 @@ export default function StudentMyLearningPage() {
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1240px]">
           <header className="flex items-center gap-24">
-            <div className="w-[280px] text-[#a900eb]">
-              <BookIcon />
-            </div>
+            <Image
+              src="/icons/MyLearning.png"
+              alt=""
+              width={280}
+              height={280}
+              className="h-auto w-[280px] rounded-xl object-contain"
+              aria-hidden="true"
+            />
             <div>
               <div className="mb-7 h-3 w-36 bg-[#b20cf0]" />
               <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
@@ -109,7 +113,7 @@ export default function StudentMyLearningPage() {
                 >
                   ›
                 </span>
-                <StudentPlaceholder />
+                <StudentPlaceholder name={profile.name} />
                 <span className="text-2xl font-medium">{profile.name}</span>
               </button>
 
@@ -123,7 +127,7 @@ export default function StudentMyLearningPage() {
                 <div className="min-h-0 overflow-hidden bg-white text-[#111]">
                   <div className="border-b-8 border-[#a900eb] bg-[#a900eb] px-12 py-5">
                     <div className="flex items-center gap-6">
-                      <StudentPlaceholder large />
+                      <StudentPlaceholder large name={profile.name} />
                       <span className="text-2xl font-semibold text-white">
                         {profile.name}
                       </span>

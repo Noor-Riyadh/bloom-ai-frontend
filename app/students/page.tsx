@@ -5,22 +5,12 @@ import { useEffect } from "react";
 import { getTeacherStudents } from "@/lib/api";
 import { getCurrentAuthUser } from "@/lib/auth";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
+import { StudentPlaceholder } from "@/components/StudentPlaceholder";
 import {
   StudentMetricIcon,
   type StudentMetricIconType,
 } from "@/components/StudentMetricIcon";
 import type { Student } from "@/lib/mockData";
-
-function StudentPlaceholder({ large = false }: { large?: boolean }) {
-  return (
-    <div
-      className={`shrink-0 rounded-xl border-2 border-[#ff9b24] bg-gradient-to-br from-[#ffd6b4] via-[#f4aec0] to-[#7652c4] ${
-        large ? "h-28 w-28" : "h-20 w-20"
-      }`}
-      aria-label="Student photo placeholder"
-    />
-  );
-}
 
 function Chevron({ expanded }: { expanded: boolean }) {
   return (
@@ -94,9 +84,9 @@ export default function StudentsPage() {
       <TeacherSidebar />
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1240px]">
-          <header className="flex items-center gap-24">
-            <div className="h-[305px] w-[400px] rounded-xl border-2 border-transparent bg-[linear-gradient(135deg,#f7d7bd,#b8a6cb)_padding-box,linear-gradient(135deg,#ff851b,#d13be8)_border-box]" />
-            <div>
+          <header className="flex items-center gap-0">
+            <div className="" />
+            <div className="text-left">
               <div className="mb-8 h-3 w-36 bg-[#b20cf0]" />
               <h1 className="text-5xl font-extrabold leading-none tracking-[-2px]">
                 My Students!
@@ -154,7 +144,7 @@ export default function StudentsPage() {
                     aria-expanded={expanded}
                   >
                     <Chevron expanded={expanded} />
-                    <StudentPlaceholder />
+                    <StudentPlaceholder name={student.name} variant="medium" />
                     <span className="text-2xl font-medium">{student.name}</span>
                   </button>
 
@@ -168,7 +158,7 @@ export default function StudentsPage() {
                     <div className="min-h-0 overflow-hidden bg-[#f1f1f1] text-[#111]">
                       <div className="border-b-8 border-[#a900eb] bg-[#a900eb] px-12 py-5">
                         <div className="flex items-center gap-6">
-                          <StudentPlaceholder large />
+                          <StudentPlaceholder large name={student.name} />
                           <span className="text-2xl font-semibold text-white">
                             {student.name}
                           </span>
