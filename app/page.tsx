@@ -1,69 +1,198 @@
-import Image from "next/image";
+"use client";
+
+import { FormEvent, useState } from "react";
+import {
+  loginUser,
+  signupUser,
+  type UserRole,
+} from "@/lib/auth";
+
+const roles: Array<{ value: UserRole; label: string }> = [
+  { value: "teacher", label: "Teacher" },
+  { value: "parent", label: "Parent" },
+  { value: "student", label: "Student" },
+  { value: "admin", label: "School Admin" },
+];
+
+function BloomLogo() {
+  return (
+    <svg
+      aria-label="Bloom"
+      className="h-[106px] w-[106px] shrink-0"
+      viewBox="0 0 106 106"
+      role="img"
+    >
+      <rect width="106" height="106" rx="20" fill="#151515" />
+      <circle cx="53" cy="32" r="12" fill="#b5f51c" />
+      <path
+        d="M19 42c25 2 39 16 39 43-24-1-39-15-39-43Z"
+        fill="#ff851b"
+      />
+      <path
+        d="M87 42C62 44 48 58 48 85c24-1 39-15 39-43Z"
+        fill="#7539ee"
+      />
+    </svg>
+  );
+}
 
 export default function Home() {
+  const [isSignup, setIsSignup] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<UserRole>("teacher");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  function switchMode(nextIsSignup: boolean) {
+    setIsSignup(nextIsSignup);
+    setError("");
+    setSuccess("");
+  }
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setError("");
+    setSuccess("");
+    setIsSubmitting(true);
+
+    try {
+      const response = isSignup
+        ? await signupUser(name, email, password, role)
+        : await loginUser(email, password);
+
+      setSuccess(
+        isSignup
+          ? `Welcome, ${response.user.name}! Your account is ready.`
+          : `Welcome back, ${response.user.name}!`,
+      );
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="flex min-h-screen items-center justify-center bg-white px-6 py-12 text-[#111111]">
+      <section className="w-full max-w-[500px]">
+        <div className="mb-[51px] flex items-center gap-[57px]">
+          <BloomLogo />
+          <div>
+            <div className="mb-[14px] h-[6px] w-[56px] bg-[#bd0cf4]" />
+            <h1 className="font-sans text-[40px] font-extrabold leading-[0.9] tracking-[-2px] text-[#a30bed]">
+              Welcome
+            </h1>
+            <p className="font-sans text-[40px] font-extrabold leading-[0.9] tracking-[-2px]">
+              To Bloom
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+
+        <div className="h-px w-full bg-gradient-to-r from-[#ffae48] via-[#e947c8] to-[#be40ff]" />
+
+        <form
+          className="mt-[27px] flex flex-col gap-[14px]"
+          onSubmit={handleSubmit}
+        >
+          {isSignup && (
+            <label className="flex flex-col gap-[8px]">
+              <span className="text-center text-[15px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
+                Your name
+              </span>
+              <input
+                required
+                type="text"
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                placeholder="Enter your full name"
+                className="h-[31px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[14px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
+              />
+            </label>
+          )}
+
+          <label className="flex flex-col gap-[8px]">
+            <span className="text-center text-[15px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
+              Email
+            </span>
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              placeholder="Enter your email"
+              className="h-[31px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[14px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          </label>
+
+          <label className="flex flex-col gap-[8px]">
+            <span className="text-center text-[15px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
+              Password
+            </span>
+            <input
+              required
+              minLength={6}
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              placeholder="Enter your password"
+              className="h-[31px] rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[14px] font-medium outline-none transition placeholder:text-[#777] focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
+            />
+          </label>
+
+          {isSignup && (
+            <label className="flex flex-col gap-[8px]">
+              <span className="text-center text-[15px] font-semibold uppercase tracking-[-0.1px] text-[#a400ff]">
+                Choose your role
+              </span>
+              <select
+                required
+                value={role}
+                onChange={(event) => setRole(event.target.value as UserRole)}
+                className="h-[31px] appearance-none rounded-[10px] border border-[#f56c9e] bg-white px-5 text-[14px] font-medium outline-none focus:border-[#a400ff] focus:ring-1 focus:ring-[#d64cf1]"
+              >
+                {roles.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {(error || success) && (
+            <p
+              aria-live="polite"
+              className={`text-center text-[13px] font-medium ${
+                error ? "text-[#d83364]" : "text-[#568500]"
+              }`}
+            >
+              {error || success}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="mt-[5px] h-[31px] rounded-[8px] bg-gradient-to-r from-[#ff851b] via-[#f84e98] to-[#a900f5] text-[12px] font-bold uppercase text-white shadow-sm transition hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-[#d64cf1] focus:ring-offset-2 disabled:cursor-wait disabled:opacity-70"
           >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            {isSubmitting ? "Please wait..." : isSignup ? "Sign Up" : "Continue"}
+          </button>
+        </form>
+
+        <p className="mt-[19px] text-center text-[14px] text-[#555]">
+          {isSignup ? "Already have an account?" : "New to Bloom?"}{" "}
+          <button
+            type="button"
+            onClick={() => switchMode(!isSignup)}
+            className="font-semibold text-[#a400ff] underline decoration-transparent underline-offset-2 transition hover:decoration-current"
+          >
+            {isSignup ? "Log in" : "Create an account"}
+          </button>
+        </p>
+      </section>
+    </main>
   );
 }
