@@ -45,10 +45,10 @@ export default function AdminDashboardPage() {
             </div>
             <div>
               <div className="mb-7 h-3 w-36 bg-[#b20cf0]" />
-              <h1 className="text-7xl font-extrabold leading-none tracking-[-4px] text-[#a20bed]">
+              <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
                 School Dashboard
               </h1>
-              <p className="mt-5 text-2xl">
+              <p className="mt-5 text-lg">
                 Showing students from                 <strong>{schoolName || "—"}</strong> only.
               </p>
             </div>
@@ -56,22 +56,22 @@ export default function AdminDashboardPage() {
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           {isLoading ? (
-            <p className="py-20 text-center text-xl text-[#a20bed]">
+            <p className="py-20 text-center text-lg text-[#a20bed]">
               Loading school data...
             </p>
           ) : error ? (
-            <p className="py-20 text-center text-xl text-[#d83364]">{error}</p>
+            <p className="py-20 text-center text-lg text-[#d83364]">{error}</p>
           ) : (
             <TeacherMetricCards students={students} compact />
           )}
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <section>
-            <h2 className="mb-8 text-center text-3xl font-semibold text-[#a20bed]">
+            <h2 className="mb-8 text-center text-2xl font-semibold text-[#a20bed]">
               School Students
             </h2>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[980px] border-collapse text-left text-base">
+              <table className="w-full min-w-[980px] border-collapse text-left text-sm">
                 <thead>
                   <tr className="bg-[#a900eb] text-white">
                     <th className="px-5 py-4 font-medium">Student</th>
@@ -104,10 +104,10 @@ export default function AdminDashboardPage() {
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <section>
-            <h2 className="mb-8 text-center text-3xl font-semibold text-[#a20bed]">
+            <h2 className="mb-8 text-center text-2xl font-semibold text-[#a20bed]">
               Classes
             </h2>
-            <table className="w-full border-collapse text-left text-base">
+            <table className="w-full border-collapse text-left text-sm">
               <thead>
                 <tr className="bg-[#a900eb] text-white">
                   <th className="px-5 py-4 font-medium">Class</th>

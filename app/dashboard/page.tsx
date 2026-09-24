@@ -50,9 +50,9 @@ export default function TeacherDashboardPage() {
       <TeacherSidebar />
       <section className="min-w-0 flex-1 px-16 py-20">
         <div className="mx-auto max-w-[1050px]">
-          <TeacherPageHeader title="Teacher" name="Dashboard" />
+          <TeacherPageHeader title="Teacher" name="Dashboard" compact />
           <div className="my-10 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
-          <h2 className="mb-10 text-center text-3xl font-semibold text-[#a20bed]">
+          <h2 className="mb-8 text-center text-2xl font-semibold text-[#a20bed]">
             Students of {teacherName}
           </h2>
           {isLoading ? (
@@ -69,11 +69,11 @@ export default function TeacherDashboardPage() {
 
           {!isLoading && !error && (
             <section id="students">
-              <h2 className="mb-6 text-center text-3xl font-semibold text-[#a20bed]">
+              <h2 className="mb-6 text-center text-2xl font-semibold text-[#a20bed]">
                 Class Performance
               </h2>
               <div className="overflow-x-auto">
-                <table className="w-full min-w-[800px] border-collapse text-left text-base">
+                <table className="w-full min-w-[800px] border-collapse text-left text-sm">
                   <thead>
                     <tr className="bg-[#a900eb] text-white">
                       <th className="px-5 py-4 font-medium">Student</th>
@@ -105,15 +105,15 @@ export default function TeacherDashboardPage() {
           <div className="my-10 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           {!isLoading && !error && (
             <section>
-              <h2 className="mb-6 text-center text-3xl font-semibold text-[#a20bed]">
+              <h2 className="mb-6 text-center text-2xl font-semibold text-[#a20bed]">
                 Performance Distribution
               </h2>
               <div className="h-[340px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={distribution} margin={{ top: 10, right: 20, left: 0, bottom: 10 }}>
                     <CartesianGrid stroke="#cfcfcf" vertical={false} />
-                    <XAxis dataKey="performance_level" tick={{ fill: "#111", fontSize: 14 }} />
-                    <YAxis allowDecimals={false} tick={{ fill: "#a20bed", fontSize: 14 }} />
+                    <XAxis dataKey="performance_level" tick={{ fill: "#111", fontSize: 12 }} />
+                    <YAxis allowDecimals={false} tick={{ fill: "#a20bed", fontSize: 12 }} />
                     <Tooltip />
                     <Bar dataKey="count" fill="#a900eb" barSize={120} />
                   </BarChart>

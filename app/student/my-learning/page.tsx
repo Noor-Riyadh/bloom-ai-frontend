@@ -75,10 +75,10 @@ export default function StudentMyLearningPage() {
             </div>
             <div>
               <div className="mb-7 h-3 w-36 bg-[#b20cf0]" />
-              <h1 className="text-7xl font-extrabold leading-none tracking-[-4px] text-[#a20bed]">
+              <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
                 My Learning
               </h1>
-              <p className="mt-5 text-2xl">Here is your current learning profile</p>
+              <p className="mt-5 text-lg">Here is your current learning profile</p>
             </div>
           </header>
 
@@ -86,11 +86,11 @@ export default function StudentMyLearningPage() {
 
           <section>
             {error ? (
-              <p className="rounded-xl bg-[#fff0f0] px-6 py-5 text-center text-lg font-medium text-[#a00000]">
+              <p className="rounded-xl bg-[#fff0f0] px-6 py-5 text-center text-base font-medium text-[#a00000]">
                 {error}
               </p>
             ) : !profile ? (
-              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-base font-medium">
                 Loading your learning data...
               </p>
             ) : (
@@ -102,7 +102,7 @@ export default function StudentMyLearningPage() {
                 aria-expanded={expanded}
               >
                 <span
-                  className={`text-5xl leading-none transition-transform duration-300 ${
+                  className={`text-4xl leading-none transition-transform duration-300 ${
                     expanded ? "rotate-90" : ""
                   }`}
                   aria-hidden="true"
@@ -110,7 +110,7 @@ export default function StudentMyLearningPage() {
                   ›
                 </span>
                 <StudentPlaceholder />
-                <span className="text-3xl font-medium">{profile.name}</span>
+                <span className="text-2xl font-medium">{profile.name}</span>
               </button>
 
               <div
@@ -124,14 +124,14 @@ export default function StudentMyLearningPage() {
                   <div className="border-b-8 border-[#a900eb] bg-[#a900eb] px-12 py-5">
                     <div className="flex items-center gap-6">
                       <StudentPlaceholder large />
-                      <span className="text-3xl font-semibold text-white">
+                      <span className="text-2xl font-semibold text-white">
                         {profile.name}
                       </span>
                     </div>
                   </div>
 
                   <section className="px-12 py-12">
-                    <h2 className="mb-8 text-center text-4xl font-semibold text-[#a20bed]">
+                    <h2 className="mb-8 text-center text-3xl font-semibold text-[#a20bed]">
                       Academic Performance
                     </h2>
                     <div className="h-[380px] w-full">
@@ -143,11 +143,11 @@ export default function StudentMyLearningPage() {
                           <CartesianGrid stroke="#cfcfcf" vertical={false} />
                           <XAxis
                             dataKey="subject"
-                            tick={{ fill: "#111", fontSize: 16 }}
+                            tick={{ fill: "#111", fontSize: 13 }}
                           />
                           <YAxis
                             domain={[0, 100]}
-                            tick={{ fill: "#a20bed", fontSize: 16 }}
+                            tick={{ fill: "#a20bed", fontSize: 13 }}
                           />
                           <Tooltip />
                           <Bar dataKey="score" fill="#a900eb" barSize={80} />
@@ -163,7 +163,7 @@ export default function StudentMyLearningPage() {
                         <InfoIcon type="teacher" />
                         <InfoIcon type="school" />
                       </div>
-                      <div className="text-2xl">
+                      <div className="text-lg">
                         <p className="border-b border-[#c9c9c9] py-5">
                           <strong>Class:</strong> {profile.class_name ?? "—"}
                         </p>

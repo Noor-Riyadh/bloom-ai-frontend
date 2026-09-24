@@ -30,13 +30,13 @@ export function StudentMetricCards({
   ];
 
   return (
-    <div className="grid grid-cols-4 gap-10">
+    <div className="grid grid-cols-4 gap-8">
       {metrics.map((metric) => (
         <div className="text-center" key={metric.label}>
-          <div className="mx-auto flex h-[155px] w-[155px] items-center justify-center rounded-xl bg-gradient-to-br from-[#a900f5] to-[#a400e8] text-white shadow-[2px_4px_5px_rgba(0,0,0,0.25)]">
+          <div className="mx-auto flex h-[128px] w-[128px] items-center justify-center rounded-xl bg-gradient-to-br from-[#a900f5] to-[#a400e8] text-white shadow-[2px_4px_5px_rgba(0,0,0,0.25)]">
             <StudentMetricIcon type={metric.icon} />
           </div>
-          <p className="mt-3 text-lg text-[#111]">
+          <p className="mt-3 text-base text-[#111]">
             {metric.label}: <span className="font-bold">{metric.value}</span>
           </p>
           <div className="mx-auto mt-3 h-[2px] w-[70px] bg-gradient-to-r from-[#ff851b] to-[#d13be8]" />

@@ -40,10 +40,10 @@ export default function ParentHomePage() {
             <StudentPlaceholder large />
             <div>
               <div className="mb-8 h-3 w-36 bg-[#b20cf0]" />
-              <h1 className="text-7xl font-extrabold leading-none tracking-[-4px] text-[#a20bed]">
+              <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
                 Welcome
               </h1>
-              <p className="mt-2 text-6xl font-extrabold leading-none tracking-[-3px]">
+              <p className="mt-2 text-4xl font-extrabold leading-none tracking-[-2px]">
                 {parent?.name ?? "—"}
               </p>
             </div>
@@ -51,16 +51,16 @@ export default function ParentHomePage() {
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           {isLoading ? (
-            <p className="py-20 text-center text-xl text-[#a20bed]">
+            <p className="py-20 text-center text-lg text-[#a20bed]">
               Loading children data...
             </p>
           ) : error ? (
-            <p className="py-20 text-center text-xl text-[#d83364]">{error}</p>
+            <p className="py-20 text-center text-lg text-[#d83364]">{error}</p>
           ) : (
             <ParentMetricCards childRecords={children} />
           )}
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
-          <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+          <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-base font-medium">
             You can view your children&apos;s academic performance and learning progress.
           </p>
         </div>

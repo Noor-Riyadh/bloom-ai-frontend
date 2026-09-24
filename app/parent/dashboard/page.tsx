@@ -61,10 +61,10 @@ export default function ParentDashboardPage() {
             </div>
             <div>
               <div className="mb-7 h-3 w-36 bg-[#b20cf0]" />
-              <h1 className="text-7xl font-extrabold leading-none tracking-[-4px] text-[#a20bed]">
+              <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
                 Parent Dashboard
               </h1>
-              <p className="mt-5 text-2xl">
+              <p className="mt-5 text-lg">
                 Showing only the children linked to{" "}
                 <strong>{parent?.name ?? "—"}</strong>
               </p>
@@ -78,7 +78,7 @@ export default function ParentDashboardPage() {
               <StudentMetricIcon type="score" />
             </div>
             <div>
-              <p className="text-4xl">
+              <p className="text-lg">
                 My Children: <strong>{children.length}</strong>
               </p>
               <div className="mt-8 h-1 w-44 bg-gradient-to-r from-[#ff851b] to-[#d13be8]" />
@@ -89,15 +89,15 @@ export default function ParentDashboardPage() {
 
           <section className="space-y-4">
             {error ? (
-              <p className="rounded-xl bg-[#fff0f0] px-6 py-5 text-center text-lg font-medium text-[#a00000]">
+              <p className="rounded-xl bg-[#fff0f0] px-6 py-5 text-center text-base font-medium text-[#a00000]">
                 {error}
               </p>
             ) : loading ? (
-              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-base font-medium">
                 Loading your children...
               </p>
             ) : children.length === 0 ? (
-              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-base font-medium">
                 No children are linked to this account.
               </p>
             ) : children.map((child) => {
@@ -116,7 +116,7 @@ export default function ParentDashboardPage() {
                     aria-expanded={expanded}
                   >
                     <span
-                      className={`text-5xl leading-none transition-transform duration-300 ${
+                      className={`text-4xl leading-none transition-transform duration-300 ${
                         expanded ? "rotate-90" : ""
                       }`}
                       aria-hidden="true"
@@ -124,7 +124,7 @@ export default function ParentDashboardPage() {
                       ›
                     </span>
                     <StudentPlaceholder />
-                    <span className="text-3xl font-medium">{child.name}</span>
+                    <span className="text-2xl font-medium">{child.name}</span>
                   </button>
 
                   <div
@@ -138,34 +138,34 @@ export default function ParentDashboardPage() {
                       <div className="border-b-8 border-[#a900eb] bg-[#a900eb] px-12 py-5">
                         <div className="flex items-center gap-6">
                           <StudentPlaceholder large />
-                          <span className="text-3xl font-semibold text-white">
+                          <span className="text-2xl font-semibold text-white">
                             {child.name}
                           </span>
                         </div>
                       </div>
-                      <div className="grid grid-cols-[1fr_1fr_1fr_1.2fr] gap-8 px-12 py-12">
+                      <div className="grid grid-cols-[1fr_1fr_1fr_1.2fr] gap-6 px-10 py-10">
                         <div className="text-center">
                           <div className="mx-auto flex h-40 w-40 items-center justify-center rounded-3xl bg-[#a900eb] text-white">
                             <StudentMetricIcon type="score" />
                           </div>
-                          <p className="mt-5 text-2xl">Overall Score</p>
-                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.overall_score?.toFixed(1) ?? "—"}</p>
+                          <p className="mt-4 text-lg">Overall Score</p>
+                          <p className="text-3xl font-extrabold text-[#a900eb]">{child.overall_score?.toFixed(1) ?? "—"}</p>
                         </div>
                         <div className="text-center">
                           <div className="mx-auto flex h-40 w-40 items-center justify-center rounded-3xl bg-[#a900eb] text-white">
                             <StudentMetricIcon type="attendance" />
                           </div>
-                          <p className="mt-5 text-2xl">Attendance</p>
-                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.attendance_percentage == null ? "—" : `${child.attendance_percentage.toFixed(1)}%`}</p>
+                          <p className="mt-4 text-lg">Attendance</p>
+                          <p className="text-3xl font-extrabold text-[#a900eb]">{child.attendance_percentage == null ? "—" : `${child.attendance_percentage.toFixed(1)}%`}</p>
                         </div>
                         <div className="text-center">
                           <div className="mx-auto flex h-40 w-40 items-center justify-center rounded-3xl bg-[#a900eb] text-white">
                             <StudentMetricIcon type="study" />
                           </div>
-                          <p className="mt-5 text-2xl">Study Hours</p>
-                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.study_hours_per_day?.toFixed(1) ?? "—"}</p>
+                          <p className="mt-4 text-lg">Study Hours</p>
+                          <p className="text-3xl font-extrabold text-[#a900eb]">{child.study_hours_per_day?.toFixed(1) ?? "—"}</p>
                         </div>
-                        <div className="border-l-2 border-[#c9c9c9] pl-10 text-2xl">
+                        <div className="border-l-2 border-[#c9c9c9] pl-8 text-lg">
                           <p className="flex items-center gap-3 border-b border-[#c9c9c9] py-5">
                             <span className="h-7 w-7 text-[#a900eb]"><DetailIcon type="class" /></span>
                             <span><strong>Class:</strong> {child.class_name ?? "—"}</span>

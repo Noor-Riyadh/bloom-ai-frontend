@@ -36,10 +36,10 @@ export default function StudentHomePage() {
             <StudentPlaceholder large />
             <div>
               <div className="mb-8 h-3 w-36 bg-[#b20cf0]" />
-              <h1 className="text-7xl font-extrabold leading-none tracking-[-4px] text-[#a20bed]">
+              <h1 className="text-5xl font-extrabold leading-none tracking-[-2px] text-[#a20bed]">
                 Welcome
               </h1>
-              <p className="mt-2 text-6xl font-extrabold leading-none tracking-[-3px]">
+              <p className="mt-2 text-4xl font-extrabold leading-none tracking-[-2px]">
                 {profile?.name ?? "Loading..."}
               </p>
             </div>
@@ -47,18 +47,18 @@ export default function StudentHomePage() {
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           {error ? (
-            <p className="rounded-xl bg-[#fff0f0] px-6 py-5 text-center text-lg font-medium text-[#a00000]">
+            <p className="rounded-xl bg-[#fff0f0] px-6 py-5 text-center text-base font-medium text-[#a00000]">
               {error}
             </p>
           ) : profile ? (
             <StudentMetricCards studentProfile={profile} />
           ) : (
-            <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+            <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-base font-medium">
               Loading your learning data...
             </p>
           )}
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
-          <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+          <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-base font-medium">
             You can view your learning performance and personalized learning information.
           </p>
         </div>

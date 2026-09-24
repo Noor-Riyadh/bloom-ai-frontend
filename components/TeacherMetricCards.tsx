@@ -83,12 +83,12 @@ export function TeacherMetricCards({
         <div className="text-center" key={metric.label}>
           <div
             className={`mx-auto flex items-center justify-center rounded-xl bg-gradient-to-br from-[#a900f5] to-[#a400e8] text-white shadow-[2px_4px_5px_rgba(0,0,0,0.25)] ${
-              compact ? "h-[155px] w-[155px]" : "h-[128px] w-[128px]"
+              compact ? "h-[128px] w-[128px]" : "h-[116px] w-[116px]"
             }`}
           >
             <MetricIcon type={metric.icon} />
           </div>
-          <p className={`mt-3 text-[#111] ${compact ? "text-lg" : "text-sm"}`}>
+          <p className={`mt-3 text-[#111] ${compact ? "text-base" : "text-sm"}`}>
             {metric.label}:{" "}
             <span className="font-bold">{metric.value}</span>
           </p>

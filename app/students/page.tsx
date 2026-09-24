@@ -25,7 +25,7 @@ function StudentPlaceholder({ large = false }: { large?: boolean }) {
 function Chevron({ expanded }: { expanded: boolean }) {
   return (
     <span
-      className={`text-5xl leading-none transition-transform duration-300 ${
+      className={`text-4xl leading-none transition-transform duration-300 ${
         expanded ? "rotate-90" : ""
       }`}
       aria-hidden="true"
@@ -49,8 +49,8 @@ function DetailMetric({
       <div className="mx-auto flex h-40 w-40 items-center justify-center rounded-3xl bg-[#a900eb] text-white shadow-[3px_5px_5px_rgba(0,0,0,0.22)]">
         <StudentMetricIcon type={icon} />
       </div>
-      <p className="mt-5 text-2xl">{label}</p>
-      <p className="text-4xl font-extrabold text-[#a900eb]">{value}</p>
+      <p className="mt-4 text-lg">{label}</p>
+      <p className="text-3xl font-extrabold text-[#a900eb]">{value}</p>
     </div>
   );
 }
@@ -98,10 +98,10 @@ export default function StudentsPage() {
             <div className="h-[305px] w-[400px] rounded-xl border-2 border-transparent bg-[linear-gradient(135deg,#f7d7bd,#b8a6cb)_padding-box,linear-gradient(135deg,#ff851b,#d13be8)_border-box]" />
             <div>
               <div className="mb-8 h-3 w-36 bg-[#b20cf0]" />
-              <h1 className="text-7xl font-extrabold leading-none tracking-[-4px]">
+              <h1 className="text-5xl font-extrabold leading-none tracking-[-2px]">
                 My Students!
               </h1>
-              <p className="mt-5 text-2xl">
+              <p className="mt-5 text-lg">
                 You are reviewing the students assigned to {teacherName}.
               </p>
             </div>
@@ -117,7 +117,7 @@ export default function StudentsPage() {
             <p className="py-20 text-center text-xl text-[#d83364]">{error}</p>
           ) : <><section className="mx-auto max-w-[1050px]">
             <label
-              className="mb-8 block text-center text-4xl font-medium uppercase text-[#a20bed]"
+              className="mb-6 block text-center text-2xl font-medium uppercase text-[#a20bed]"
               htmlFor="student-select"
             >
               Select Student
@@ -126,7 +126,7 @@ export default function StudentsPage() {
               id="student-select"
               value={selectedStudent}
               onChange={(event) => setSelectedStudent(event.target.value)}
-              className="h-20 w-full appearance-none rounded-3xl border-2 border-transparent bg-[linear-gradient(white,white)_padding-box,linear-gradient(90deg,#ff851b,#d13be8)_border-box] px-12 text-2xl outline-none"
+              className="h-14 w-full appearance-none rounded-2xl border-2 border-transparent bg-[linear-gradient(white,white)_padding-box,linear-gradient(90deg,#ff851b,#d13be8)_border-box] px-6 text-lg outline-none"
             >
               {students.map((student) => (
                 <option key={student.name}>{student.name}</option>
@@ -149,13 +149,13 @@ export default function StudentsPage() {
                 >
                   <button
                     type="button"
-                    className="flex min-h-[130px] w-full items-center gap-8 px-12 text-left"
+                    className="flex min-h-[110px] w-full items-center gap-6 px-8 text-left"
                     onClick={() => toggleStudent(student.name)}
                     aria-expanded={expanded}
                   >
                     <Chevron expanded={expanded} />
                     <StudentPlaceholder />
-                    <span className="text-3xl font-medium">{student.name}</span>
+                    <span className="text-2xl font-medium">{student.name}</span>
                   </button>
 
                   <div
@@ -169,12 +169,12 @@ export default function StudentsPage() {
                       <div className="border-b-8 border-[#a900eb] bg-[#a900eb] px-12 py-5">
                         <div className="flex items-center gap-6">
                           <StudentPlaceholder large />
-                          <span className="text-3xl font-semibold text-white">
+                          <span className="text-2xl font-semibold text-white">
                             {student.name}
                           </span>
                         </div>
                       </div>
-                      <div className="grid grid-cols-[1fr_1fr_1fr_1.2fr] gap-8 px-12 py-12">
+                      <div className="grid grid-cols-[1fr_1fr_1fr_1.2fr] gap-6 px-10 py-10">
                         <DetailMetric
                           icon="score"
                           label="Overall Score"
@@ -190,7 +190,7 @@ export default function StudentsPage() {
                           label="Study Hours"
                           value={student.study_hours_per_day.toFixed(1)}
                         />
-                        <div className="border-l-2 border-[#c9c9c9] pl-10 text-2xl">
+                        <div className="border-l-2 border-[#c9c9c9] pl-8 text-lg">
                           <p className="border-b border-[#c9c9c9] py-5">
                             <strong>Class:</strong> {student.class_name ?? "—"}
                           </p>
