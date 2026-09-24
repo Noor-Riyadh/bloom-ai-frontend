@@ -16,4 +16,84 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-poppins), sans-serif;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+html.high-contrast {
+  font-size: 118%;
+}
+
+html.high-contrast body,
+html.high-contrast main,
+html.high-contrast section,
+html.high-contrast article,
+html.high-contrast header,
+html.high-contrast aside,
+html.high-contrast div,
+html.high-contrast form,
+html.high-contrast fieldset,
+html.high-contrast table,
+html.high-contrast thead,
+html.high-contrast tbody,
+html.high-contrast tr,
+html.high-contrast td,
+html.high-contrast th {
+  background-color: #000 !important;
+  color: #fff !important;
+}
+
+html.high-contrast p,
+html.high-contrast label,
+html.high-contrast span {
+  color: #fff !important;
+}
+
+html.high-contrast * {
+  border-color: #fff !important;
+}
+
+html.high-contrast input,
+html.high-contrast textarea,
+html.high-contrast select,
+html.high-contrast button {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+
+html.high-contrast button:hover,
+html.high-contrast a:hover {
+  background: #fff !important;
+  color: #000 !important;
+}
+
+html.high-contrast svg {
+  color: #fff !important;
+}
+
+html.high-contrast .bg-gradient-to-r,
+html.high-contrast .bg-gradient-to-br {
+  background-image: none !important;
+}
+
+html.high-contrast [class*="bg-[#eeeeee]"],
+html.high-contrast [class*="bg-[#f0f0f0]"],
+html.high-contrast [class*="bg-[#f1f1f1]"],
+html.high-contrast [class*="bg-[#fff0f0]"],
+html.high-contrast [class*="bg-[#fafafa]"],
+html.high-contrast [class*="bg-[#f7f3fa]"],
+html.high-contrast [class*="bg-[#fcf8ff]"] {
+  background: #000 !important;
+  color: #fff !important;
+  border: 2px solid #fff !important;
+}
+
+html.high-contrast .hc-toggle-track {
+  background: #fff !important;
+  border: 2px solid #fff !important;
+}
+
+html.high-contrast .hc-toggle-track span {
+  background: #000 !important;
+  border: 2px solid #000 !important;
 }

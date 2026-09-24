@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { MarkdownContent } from "@/components/MarkdownContent";
+import { ReadAloudButton } from "@/components/ReadAloudButton";
 import { StudentPlaceholder } from "@/components/StudentPlaceholder";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
 import { generateLearningPlan, getTeacherStudents } from "@/lib/api";
@@ -319,7 +320,10 @@ export default function AIAssistantPage() {
                   Generating your personalized plan...
                 </div>
               ) : plan ? (
-                <MarkdownContent content={plan} />
+                <>
+                  <MarkdownContent content={plan} />
+                  <ReadAloudButton text={plan} language={generatedLanguage ?? "en"} />
+                </>
               ) : (
                 <p className="text-lg text-[#777]">
                   Select a student and generate a plan to see personalized learning guidance.

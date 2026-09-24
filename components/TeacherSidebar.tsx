@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { useState } from "react";
 import { getCurrentAuthUser } from "@/lib/auth";
+import { useAccessibility } from "./AccessibilityProvider";
 import { BloomMark } from "./BloomMark";
 
 function NavIcon({ children }: { children: ReactNode }) {
@@ -86,6 +87,7 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
       return user?.role === role ? user.name : "—";
     },
   );
+  const { highContrast, setHighContrast } = useAccessibility();
 
   return (
     <aside
@@ -256,6 +258,33 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
         >
           {collapsed ? <span className="h-6 w-6"><ChangeRoleIcon /></span> : "Change Role"}
         </Link>
+        <div
+          className={`mt-5 flex items-center text-sm font-semibold text-white ${
+            collapsed ? "justify-center" : "gap-2"
+          }`}
+          title={collapsed ? "High Contrast Mode" : undefined}
+        >
+          <button
+            type="button"
+            role="switch"
+            aria-checked={highContrast}
+            aria-label="High Contrast Mode"
+            onClick={() => setHighContrast(!highContrast)}
+            className={`hc-toggle-track relative h-7 w-12 shrink-0 rounded-full p-0 transition-colors ${
+              highContrast
+                ? "bg-gradient-to-r from-[#ff851b] via-[#f84e98] to-[#a900f5]"
+                : "bg-slate-500"
+            }`}
+          >
+            <span
+              aria-hidden="true"
+              className={`absolute left-1 top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-200 ${
+                highContrast ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
+          {!collapsed && <span>♿ High Contrast Mode</span>}
+        </div>
       </div>
     </aside>
   );

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { StudentPlaceholder } from "@/components/StudentPlaceholder";
+import { ReadAloudButton } from "@/components/ReadAloudButton";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
 import {
   getAssignmentQuestions,
@@ -68,6 +69,7 @@ function GradeResult({ submission }: { submission: AssignmentSubmission }) {
                 </span>
               </div>
               <p className="mt-2 text-base text-[#444]">{grade.feedback}</p>
+              <ReadAloudButton text={grade.feedback} />
             </article>
           );
         })}
@@ -77,6 +79,7 @@ function GradeResult({ submission }: { submission: AssignmentSubmission }) {
         <p className="mt-2 text-base text-[#444]">
           {submission.grading.overall_feedback || "—"}
         </p>
+        <ReadAloudButton text={submission.grading.overall_feedback} />
       </div>
     </section>
   );
