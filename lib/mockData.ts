@@ -18,9 +18,9 @@ export interface Student {
 
 export interface StudentProfile {
   name: string;
-  class_name: string;
-  teacher_name: string;
-  school_name: string;
+  class_name: string | null;
+  teacher_name: string | null;
+  school_name: string | null;
   overall_score: number;
   attendance_percentage: number;
   study_hours_per_day: number;
@@ -29,6 +29,21 @@ export interface StudentProfile {
   final_exam_score: number;
   midterm_score: number;
   participation_score: number;
+}
+
+export interface ParentChild {
+  name: string;
+  class_name: string | null;
+  teacher_name: string | null;
+  school_name: string | null;
+  overall_score: number | null;
+  attendance_percentage: number | null;
+  study_hours_per_day: number | null;
+  performance_level: PerformanceLevel | null;
+  assignment_score: number | null;
+  final_exam_score: number | null;
+  midterm_score: number | null;
+  participation_score: number | null;
 }
 
 export interface ParentProfile {

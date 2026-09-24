@@ -1,10 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StudentMetricIcon } from "@/components/StudentMetricIcon";
 import { StudentPlaceholder } from "@/components/StudentPlaceholder";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { parentProfile } from "@/lib/mockData";
+import { getParentChildren } from "@/lib/api";
+import { getCurrentAuthUser } from "@/lib/auth";
+import type { ParentChild } from "@/lib/mockData";
 
 function DetailIcon({ type }: { type: "class" | "teacher" | "school" }) {
   if (type === "class") return <StudentMetricIcon type="study" />;
@@ -24,6 +26,27 @@ function DetailIcon({ type }: { type: "class" | "teacher" | "school" }) {
 
 export default function ParentDashboardPage() {
   const [expandedChild, setExpandedChild] = useState<string | null>(null);
+  const [parent] = useState(() => getCurrentAuthUser());
+  const [children, setChildren] = useState<ParentChild[]>([]);
+  const [loading, setLoading] = useState(Boolean(parent?.email));
+  const [error, setError] = useState(
+    () => (parent?.email ? "" : "Could not identify the logged-in parent."),
+  );
+
+  useEffect(() => {
+    if (!parent?.email) return;
+
+    void getParentChildren(parent.email)
+      .then(setChildren)
+      .catch((reason: unknown) => {
+        setError(
+          reason instanceof Error
+            ? reason.message
+            : "Could not load children data",
+        );
+      })
+      .finally(() => setLoading(false));
+  }, [parent]);
 
   return (
     <main className="flex min-h-screen bg-white text-[#111]">
@@ -43,7 +66,7 @@ export default function ParentDashboardPage() {
               </h1>
               <p className="mt-5 text-2xl">
                 Showing only the children linked to{" "}
-                <strong>{parentProfile.name}</strong>
+                <strong>{parent?.name ?? "—"}</strong>
               </p>
             </div>
           </header>
@@ -56,7 +79,7 @@ export default function ParentDashboardPage() {
             </div>
             <div>
               <p className="text-4xl">
-                My Children: <strong>{parentProfile.children.length}</strong>
+                My Children: <strong>{children.length}</strong>
               </p>
               <div className="mt-8 h-1 w-44 bg-gradient-to-r from-[#ff851b] to-[#d13be8]" />
             </div>
@@ -65,7 +88,19 @@ export default function ParentDashboardPage() {
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
 
           <section className="space-y-4">
-            {parentProfile.children.map((child) => {
+            {error ? (
+              <p className="rounded-xl bg-[#fff0f0] px-6 py-5 text-center text-lg font-medium text-[#a00000]">
+                {error}
+              </p>
+            ) : loading ? (
+              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+                Loading your children...
+              </p>
+            ) : children.length === 0 ? (
+              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+                No children are linked to this account.
+              </p>
+            ) : children.map((child) => {
               const expanded = expandedChild === child.name;
 
               return (
@@ -114,34 +149,34 @@ export default function ParentDashboardPage() {
                             <StudentMetricIcon type="score" />
                           </div>
                           <p className="mt-5 text-2xl">Overall Score</p>
-                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.overall_score.toFixed(1)}</p>
+                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.overall_score?.toFixed(1) ?? "—"}</p>
                         </div>
                         <div className="text-center">
                           <div className="mx-auto flex h-40 w-40 items-center justify-center rounded-3xl bg-[#a900eb] text-white">
                             <StudentMetricIcon type="attendance" />
                           </div>
                           <p className="mt-5 text-2xl">Attendance</p>
-                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.attendance_percentage.toFixed(1)}%</p>
+                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.attendance_percentage == null ? "—" : `${child.attendance_percentage.toFixed(1)}%`}</p>
                         </div>
                         <div className="text-center">
                           <div className="mx-auto flex h-40 w-40 items-center justify-center rounded-3xl bg-[#a900eb] text-white">
                             <StudentMetricIcon type="study" />
                           </div>
                           <p className="mt-5 text-2xl">Study Hours</p>
-                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.study_hours_per_day.toFixed(1)}</p>
+                          <p className="text-4xl font-extrabold text-[#a900eb]">{child.study_hours_per_day?.toFixed(1) ?? "—"}</p>
                         </div>
                         <div className="border-l-2 border-[#c9c9c9] pl-10 text-2xl">
                           <p className="flex items-center gap-3 border-b border-[#c9c9c9] py-5">
                             <span className="h-7 w-7 text-[#a900eb]"><DetailIcon type="class" /></span>
-                            <span><strong>Class:</strong> {child.class_name}</span>
+                            <span><strong>Class:</strong> {child.class_name ?? "—"}</span>
                           </p>
                           <p className="flex items-center gap-3 border-b border-[#c9c9c9] py-5">
                             <span className="h-7 w-7 text-[#a900eb]"><DetailIcon type="teacher" /></span>
-                            <span><strong>Teacher:</strong> {child.teacher_name}</span>
+                            <span><strong>Teacher:</strong> {child.teacher_name ?? "—"}</span>
                           </p>
                           <p className="flex items-center gap-3 py-5">
                             <span className="h-7 w-7 text-[#a900eb]"><DetailIcon type="school" /></span>
-                            <span><strong>School:</strong> {child.school_name}</span>
+                            <span><strong>School:</strong> {child.school_name ?? "—"}</span>
                           </p>
                         </div>
                       </div>

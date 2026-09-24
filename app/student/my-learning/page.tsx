@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -13,14 +13,9 @@ import {
 import { StudentMetricIcon } from "@/components/StudentMetricIcon";
 import { StudentPlaceholder } from "@/components/StudentPlaceholder";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { studentProfile } from "@/lib/mockData";
-
-const academicPerformance = [
-  { subject: "Assignment", score: studentProfile.assignment_score },
-  { subject: "Final Exam", score: studentProfile.final_exam_score },
-  { subject: "Midterm", score: studentProfile.midterm_score },
-  { subject: "Participation", score: studentProfile.participation_score },
-];
+import { getStudentProfile } from "@/lib/api";
+import { getCurrentAuthUser } from "@/lib/auth";
+import type { StudentProfile } from "@/lib/mockData";
 
 function BookIcon() {
   return (
@@ -42,6 +37,32 @@ function InfoIcon({ type }: { type: "class" | "teacher" | "school" }) {
 
 export default function StudentMyLearningPage() {
   const [expanded, setExpanded] = useState(false);
+  const [studentName] = useState(
+    () => getCurrentAuthUser()?.name ?? "",
+  );
+  const [profile, setProfile] = useState<StudentProfile | null>(null);
+  const [error, setError] = useState(
+    () => (studentName ? "" : "Could not identify the logged-in student."),
+  );
+
+  useEffect(() => {
+    if (!studentName) return;
+
+    void getStudentProfile(studentName)
+      .then(setProfile)
+      .catch((reason: unknown) => {
+        setError(reason instanceof Error ? reason.message : "Could not load student data");
+      });
+  }, [studentName]);
+
+  const academicPerformance = profile
+    ? [
+        { subject: "Assignment", score: profile.assignment_score },
+        { subject: "Final Exam", score: profile.final_exam_score },
+        { subject: "Midterm", score: profile.midterm_score },
+        { subject: "Participation", score: profile.participation_score },
+      ]
+    : [];
 
   return (
     <main className="flex min-h-screen bg-white text-[#111]">
@@ -64,6 +85,15 @@ export default function StudentMyLearningPage() {
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
 
           <section>
+            {error ? (
+              <p className="rounded-xl bg-[#fff0f0] px-6 py-5 text-center text-lg font-medium text-[#a00000]">
+                {error}
+              </p>
+            ) : !profile ? (
+              <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
+                Loading your learning data...
+              </p>
+            ) : (
             <article className="overflow-hidden rounded-3xl bg-[#a900eb] text-white">
               <button
                 type="button"
@@ -80,7 +110,7 @@ export default function StudentMyLearningPage() {
                   ›
                 </span>
                 <StudentPlaceholder />
-                <span className="text-3xl font-medium">{studentProfile.name}</span>
+                <span className="text-3xl font-medium">{profile.name}</span>
               </button>
 
               <div
@@ -95,7 +125,7 @@ export default function StudentMyLearningPage() {
                     <div className="flex items-center gap-6">
                       <StudentPlaceholder large />
                       <span className="text-3xl font-semibold text-white">
-                        {studentProfile.name}
+                        {profile.name}
                       </span>
                     </div>
                   </div>
@@ -135,13 +165,13 @@ export default function StudentMyLearningPage() {
                       </div>
                       <div className="text-2xl">
                         <p className="border-b border-[#c9c9c9] py-5">
-                          <strong>Class:</strong> {studentProfile.class_name}
+                          <strong>Class:</strong> {profile.class_name ?? "—"}
                         </p>
                         <p className="border-b border-[#c9c9c9] py-5">
-                          <strong>Teacher:</strong> {studentProfile.teacher_name}
+                          <strong>Teacher:</strong> {profile.teacher_name ?? "—"}
                         </p>
                         <p className="py-5">
-                          <strong>School:</strong> {studentProfile.school_name}
+                          <strong>School:</strong> {profile.school_name ?? "—"}
                         </p>
                       </div>
                     </div>
@@ -149,6 +179,7 @@ export default function StudentMyLearningPage() {
                 </div>
               </div>
             </article>
+            )}
           </section>
         </div>
       </section>

@@ -3,7 +3,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { useState } from "react";
-import { parentProfile, studentProfile, teacher } from "@/lib/mockData";
+import { getCurrentAuthUser } from "@/lib/auth";
 import { BloomMark } from "./BloomMark";
 
 function NavIcon({ children }: { children: ReactNode }) {
@@ -71,13 +71,12 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
   const isStudent = role === "student";
   const isParent = role === "parent";
   const isAdmin = role === "admin";
-  const accountName = isStudent
-    ? studentProfile.name
-    : isParent
-      ? parentProfile.name
-      : isAdmin
-        ? "School Admin"
-      : teacher.name;
+  const [accountName] = useState(
+    () => {
+      const user = getCurrentAuthUser();
+      return user?.role === role ? user.name : "—";
+    },
+  );
 
   return (
     <aside

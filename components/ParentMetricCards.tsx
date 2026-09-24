@@ -1,38 +1,50 @@
-import { parentProfile } from "@/lib/mockData";
+import type { ParentChild } from "@/lib/mockData";
 import { StudentMetricIcon } from "./StudentMetricIcon";
 
-const children = parentProfile.children;
 const average = (values: number[]) =>
   values.length === 0
     ? 0
     : values.reduce((total, value) => total + value, 0) / values.length;
 
-const metrics = [
-  {
-    label: "My Children",
-    value: String(children.length),
-    icon: "score" as const,
-  },
-  {
-    label: "Average Score",
-    value: average(children.map((child) => child.overall_score)).toFixed(1),
-    icon: "score" as const,
-  },
-  {
-    label: "Average Attendance",
-    value: `${average(children.map((child) => child.attendance_percentage)).toFixed(1)}%`,
-    icon: "attendance" as const,
-  },
-  {
-    label: "Needs Attention",
-    value: String(
-      children.filter((child) => child.performance_level === "At Risk").length,
-    ),
-    icon: "study" as const,
-  },
-];
+export function ParentMetricCards({
+  childRecords,
+}: {
+  childRecords: ParentChild[];
+}) {
+  const scores = childRecords.flatMap((child) =>
+    child.overall_score == null ? [] : [child.overall_score],
+  );
+  const attendance = childRecords.flatMap((child) =>
+    child.attendance_percentage == null
+      ? []
+      : [child.attendance_percentage],
+  );
+  const metrics = [
+    {
+      label: "My Children",
+      value: String(childRecords.length),
+      icon: "score" as const,
+    },
+    {
+      label: "Average Score",
+      value: average(scores).toFixed(1),
+      icon: "score" as const,
+    },
+    {
+      label: "Average Attendance",
+      value: `${average(attendance).toFixed(1)}%`,
+      icon: "attendance" as const,
+    },
+    {
+      label: "Needs Attention",
+      value: String(
+        childRecords.filter((child) => child.performance_level === "At Risk")
+          .length,
+      ),
+      icon: "study" as const,
+    },
+  ];
 
-export function ParentMetricCards() {
   return (
     <div className="grid grid-cols-4 gap-10">
       {metrics.map((metric) => (
