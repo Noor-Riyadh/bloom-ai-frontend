@@ -63,17 +63,20 @@ function ChangeRoleIcon() {
 }
 
 interface TeacherSidebarProps {
-  role?: "teacher" | "student" | "parent";
+  role?: "teacher" | "student" | "parent" | "admin";
 }
 
 export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
   const [collapsed, setCollapsed] = useState(false);
   const isStudent = role === "student";
   const isParent = role === "parent";
+  const isAdmin = role === "admin";
   const accountName = isStudent
     ? studentProfile.name
     : isParent
       ? parentProfile.name
+      : isAdmin
+        ? "School Admin"
       : teacher.name;
 
   return (
@@ -110,7 +113,13 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
             <p>
               <span className="font-semibold">Role</span>
               <span className="text-white/60">
-                : {isStudent ? "Student" : isParent ? "Parent" : "Teacher"}
+                : {isStudent
+                  ? "Student"
+                  : isParent
+                    ? "Parent"
+                    : isAdmin
+                      ? "School Admin"
+                      : "Teacher"}
               </span>
             </p>
             <p className="leading-5">
@@ -132,13 +141,21 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
             }`}
-            href={isStudent ? "/student/home" : isParent ? "/parent/home" : "/home"}
+            href={
+              isStudent
+                ? "/student/home"
+                : isParent
+                  ? "/parent/home"
+                  : isAdmin
+                    ? "/admin/home"
+                    : "/home"
+            }
             title={collapsed ? "Home" : undefined}
           >
             <NavIcon><HomeIcon /></NavIcon>
             {!collapsed && "Home"}
           </Link>
-          {!isStudent && !isParent && <Link
+          {!isStudent && !isParent && !isAdmin && <Link
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
             }`}
@@ -148,7 +165,7 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
             <NavIcon><StudentIcon /></NavIcon>
             {!collapsed && "Student"}
           </Link>}
-          {!isStudent && !isParent && <Link
+          {!isStudent && !isParent && !isAdmin && <Link
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
             }`}
@@ -178,7 +195,17 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
             <NavIcon><DashboardIcon /></NavIcon>
             {!collapsed && "Dashboard"}
           </Link>}
-          {!isStudent && !isParent && <Link
+          {isAdmin && <Link
+            className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
+              collapsed ? "justify-center" : "gap-4"
+            }`}
+            href="/admin/dashboard"
+            title={collapsed ? "Dashboard" : undefined}
+          >
+            <NavIcon><DashboardIcon /></NavIcon>
+            {!collapsed && "Dashboard"}
+          </Link>}
+          {!isStudent && !isParent && !isAdmin && <Link
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
             }`}
