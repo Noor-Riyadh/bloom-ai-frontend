@@ -3,24 +3,10 @@ import {
   getAverageAttendance,
   getAverageScore,
   getStudentCount,
+  type Student,
 } from "@/lib/mockData";
 
 type MetricIcon = "students" | "score" | "risk" | "attendance";
-
-const metrics: Array<{
-  label: string;
-  value: string;
-  icon: MetricIcon;
-}> = [
-  { label: "My Students", value: String(getStudentCount()), icon: "students" },
-  { label: "Average Score", value: getAverageScore().toFixed(1), icon: "score" },
-  { label: "At Risk", value: String(getAtRiskCount()), icon: "risk" },
-  {
-    label: "Average Attendance",
-    value: `${getAverageAttendance().toFixed(1)}%`,
-    icon: "attendance",
-  },
-];
 
 function MetricIcon({ type }: { type: MetricIcon }) {
   if (type === "students") {
@@ -57,7 +43,28 @@ function MetricIcon({ type }: { type: MetricIcon }) {
   );
 }
 
-export function TeacherMetricCards({ compact = false }: { compact?: boolean }) {
+export function TeacherMetricCards({
+  students,
+  compact = false,
+}: {
+  students: Student[];
+  compact?: boolean;
+}) {
+  const metrics: Array<{
+    label: string;
+    value: string;
+    icon: MetricIcon;
+  }> = [
+    { label: "My Students", value: String(getStudentCount(students)), icon: "students" },
+    { label: "Average Score", value: getAverageScore(students).toFixed(1), icon: "score" },
+    { label: "At Risk", value: String(getAtRiskCount(students)), icon: "risk" },
+    {
+      label: "Average Attendance",
+      value: `${getAverageAttendance(students).toFixed(1)}%`,
+      icon: "attendance",
+    },
+  ];
+
   return (
     <div className={`grid grid-cols-4 ${compact ? "gap-8" : "gap-10"}`}>
       {metrics.map((metric) => (

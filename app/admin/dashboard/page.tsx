@@ -26,7 +26,7 @@ export default function AdminDashboardPage() {
           </header>
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
-          <TeacherMetricCards compact />
+          <TeacherMetricCards students={school.students} compact />
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <section>

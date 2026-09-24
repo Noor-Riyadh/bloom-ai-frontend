@@ -31,6 +31,7 @@ function isAuthResponse(value: unknown): value is AuthResponse {
 }
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const authStorageKey = "bloom.auth.user";
 
 async function requestAuth(
   endpoint: "login" | "signup",
@@ -88,6 +89,7 @@ async function requestAuth(
     throw new Error("The authentication server returned an invalid response.");
   }
 
+  window.sessionStorage.setItem(authStorageKey, JSON.stringify(data.user));
   return data;
 }
 
@@ -105,4 +107,18 @@ export function signupUser(
   role: UserRole,
 ): Promise<AuthResponse> {
   return requestAuth("signup", { name, email, password, role });
+}
+
+export function getCurrentAuthUser(): AuthUser | null {
+  if (typeof window === "undefined") return null;
+
+  const storedUser = window.sessionStorage.getItem(authStorageKey);
+  if (!storedUser) return null;
+
+  try {
+    const user = JSON.parse(storedUser) as AuthUser;
+    return user.name && user.email && user.role ? user : null;
+  } catch {
+    return null;
+  }
 }

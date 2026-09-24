@@ -6,10 +6,10 @@ export interface Teacher {
 
 export interface Student {
   name: string;
-  class_name: string;
+  class_name: string | null;
   teacher_name: string;
-  parent_name: string;
-  school_name: string;
+  parent_name: string | null;
+  school_name: string | null;
   study_hours_per_day: number;
   overall_score: number;
   attendance_percentage: number;
@@ -122,7 +122,11 @@ export const students: Student[] = [
 
 export function getClassSummaries(studentList: Student[] = students) {
   const classNames = Array.from(
-    new Set(studentList.map((student) => student.class_name)),
+    new Set(
+      studentList
+        .map((student) => student.class_name)
+        .filter((className): className is string => Boolean(className)),
+    ),
   );
 
   return classNames.map((class_name) => {

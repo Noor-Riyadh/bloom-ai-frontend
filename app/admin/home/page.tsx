@@ -26,7 +26,7 @@ export default function AdminHomePage() {
           </header>
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
-          <TeacherMetricCards />
+          <TeacherMetricCards students={school.students} />
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <p className="rounded-xl bg-[#eeeeee] px-6 py-5 text-center text-lg font-medium">
             You can monitor students and performance across your school.

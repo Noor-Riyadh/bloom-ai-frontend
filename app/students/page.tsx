@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useEffect } from "react";
+import { getTeacherStudents } from "@/lib/api";
+import { getCurrentAuthUser } from "@/lib/auth";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
 import {
   StudentMetricIcon,
   type StudentMetricIconType,
 } from "@/components/StudentMetricIcon";
-import { students, teacher } from "@/lib/mockData";
+import type { Student } from "@/lib/mockData";
 
 function StudentPlaceholder({ large = false }: { large?: boolean }) {
   return (
@@ -53,8 +56,34 @@ function DetailMetric({
 }
 
 export default function StudentsPage() {
+  const [students, setStudents] = useState<Student[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
-  const [selectedStudent, setSelectedStudent] = useState(students[0]?.name ?? "");
+  const [selectedStudent, setSelectedStudent] = useState("");
+  const [teacherName] = useState(
+    () => getCurrentAuthUser()?.name ?? "Mr. Ahmed Khaled",
+  );
+
+  useEffect(() => {
+    let active = true;
+    getTeacherStudents(teacherName)
+      .then((data) => {
+        if (!active) return;
+        setStudents(data);
+        setSelectedStudent(data[0]?.name ?? "");
+      })
+      .catch(() => {
+        if (active) setError("Could not load student data");
+      })
+      .finally(() => {
+        if (active) setIsLoading(false);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [teacherName]);
 
   function toggleStudent(name: string) {
     setExpandedStudent((current) => (current === name ? null : name));
@@ -73,14 +102,20 @@ export default function StudentsPage() {
                 My Students!
               </h1>
               <p className="mt-5 text-2xl">
-                You are reviewing the students assigned to {teacher.name}.
+                You are reviewing the students assigned to {teacherName}.
               </p>
             </div>
           </header>
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
 
-          <section className="mx-auto max-w-[1050px]">
+          {isLoading ? (
+            <p className="py-20 text-center text-xl text-[#a20bed]">
+              Loading student data...
+            </p>
+          ) : error ? (
+            <p className="py-20 text-center text-xl text-[#d83364]">{error}</p>
+          ) : <><section className="mx-auto max-w-[1050px]">
             <label
               className="mb-8 block text-center text-4xl font-medium uppercase text-[#a20bed]"
               htmlFor="student-select"
@@ -157,13 +192,13 @@ export default function StudentsPage() {
                         />
                         <div className="border-l-2 border-[#c9c9c9] pl-10 text-2xl">
                           <p className="border-b border-[#c9c9c9] py-5">
-                            <strong>Class:</strong> {student.class_name}
+                            <strong>Class:</strong> {student.class_name ?? "—"}
                           </p>
                           <p className="border-b border-[#c9c9c9] py-5">
-                            <strong>Parent:</strong> {student.parent_name}
+                            <strong>Parent:</strong> {student.parent_name ?? "—"}
                           </p>
                           <p className="py-5">
-                            <strong>School:</strong> {student.school_name}
+                            <strong>School:</strong> {student.school_name ?? "—"}
                           </p>
                         </div>
                       </div>
@@ -173,6 +208,7 @@ export default function StudentsPage() {
               );
             })}
           </section>
+          </>}
         </div>
       </section>
     </main>
