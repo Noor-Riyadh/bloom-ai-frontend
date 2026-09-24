@@ -11,6 +11,19 @@ export interface AuthResponse {
   user: AuthUser;
 }
 
+export function getRoleHomePath(role: UserRole): string {
+  switch (role) {
+    case "teacher":
+      return "/home";
+    case "student":
+      return "/student/home";
+    case "parent":
+      return "/parent/home";
+    case "admin":
+      return "/admin/home";
+  }
+}
+
 interface AuthErrorPayload {
   detail?: string;
   message?: string;

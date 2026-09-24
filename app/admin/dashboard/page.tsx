@@ -1,8 +1,37 @@
+ "use client";
+
+import { useEffect, useState } from "react";
 import { TeacherMetricCards } from "@/components/TeacherMetricCards";
 import { TeacherSidebar } from "@/components/TeacherSidebar";
-import { school } from "@/lib/mockData";
+import { getSchoolStudents } from "@/lib/api";
+import { getCurrentAuthUser } from "@/lib/auth";
+import type { AdminClassSummary, AdminStudent } from "@/lib/mockData";
 
 export default function AdminDashboardPage() {
+  const [schoolName] = useState(() => getCurrentAuthUser()?.name ?? "");
+  const [students, setStudents] = useState<AdminStudent[]>([]);
+  const [classes, setClasses] = useState<AdminClassSummary[]>([]);
+  const [isLoading, setIsLoading] = useState(Boolean(schoolName));
+  const [error, setError] = useState(
+    () => (schoolName ? "" : "Could not identify the logged-in school."),
+  );
+
+  useEffect(() => {
+    if (!schoolName) return;
+
+    void getSchoolStudents(schoolName)
+      .then((data) => {
+        setStudents(data.students);
+        setClasses(data.classes);
+      })
+      .catch((reason: unknown) => {
+        setError(
+          reason instanceof Error ? reason.message : "Could not load school data",
+        );
+      })
+      .finally(() => setIsLoading(false));
+  }, [schoolName]);
+
   return (
     <main className="flex min-h-screen bg-white text-[#111]">
       <TeacherSidebar role="admin" />
@@ -20,13 +49,21 @@ export default function AdminDashboardPage() {
                 School Dashboard
               </h1>
               <p className="mt-5 text-2xl">
-                Showing students from <strong>{school.name}</strong> only.
+                Showing students from                 <strong>{schoolName || "—"}</strong> only.
               </p>
             </div>
           </header>
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
-          <TeacherMetricCards students={school.students} compact />
+          {isLoading ? (
+            <p className="py-20 text-center text-xl text-[#a20bed]">
+              Loading school data...
+            </p>
+          ) : error ? (
+            <p className="py-20 text-center text-xl text-[#d83364]">{error}</p>
+          ) : (
+            <TeacherMetricCards students={students} compact />
+          )}
 
           <div className="my-16 h-px w-full bg-gradient-to-r from-[#c02df1] to-[#b20cf0]" />
           <section>
@@ -46,14 +83,18 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {school.students.map((student) => (
+                  {students.map((student) => (
                     <tr className="border-b border-[#d8d8d8]" key={student.name}>
                       <td className="px-5 py-5 font-medium">{student.name}</td>
-                      <td className="px-5 py-5">{student.class_name}</td>
-                      <td className="px-5 py-5">{student.teacher_name}</td>
-                      <td className="px-5 py-5">{student.overall_score}</td>
-                      <td className="px-5 py-5">{student.attendance_percentage}%</td>
-                      <td className="px-5 py-5">{student.performance_level}</td>
+                      <td className="px-5 py-5">{student.class_name ?? "—"}</td>
+                      <td className="px-5 py-5">{student.teacher_name ?? "—"}</td>
+                      <td className="px-5 py-5">{student.overall_score ?? "—"}</td>
+                      <td className="px-5 py-5">
+                        {student.attendance_percentage == null
+                          ? "—"
+                          : `${student.attendance_percentage}%`}
+                      </td>
+                      <td className="px-5 py-5">{student.performance_level ?? "—"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -76,12 +117,18 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {school.classes.map((classSummary) => (
+                {classes.map((classSummary) => (
                   <tr className="border-b border-[#d8d8d8]" key={classSummary.class_name}>
-                    <td className="px-5 py-5">{classSummary.class_name}</td>
+                    <td className="px-5 py-5">{classSummary.class_name ?? "—"}</td>
                     <td className="px-5 py-5">{classSummary.student_count}</td>
-                    <td className="px-5 py-5">{classSummary.average_score.toFixed(1)}</td>
-                    <td className="px-5 py-5">{classSummary.average_attendance.toFixed(1)}%</td>
+                    <td className="px-5 py-5">
+                      {classSummary.average_score?.toFixed(1) ?? "—"}
+                    </td>
+                    <td className="px-5 py-5">
+                      {classSummary.average_attendance == null
+                        ? "—"
+                        : `${classSummary.average_attendance.toFixed(1)}%`}
+                    </td>
                   </tr>
                 ))}
               </tbody>

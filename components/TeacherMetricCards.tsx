@@ -1,10 +1,4 @@
-import {
-  getAtRiskCount,
-  getAverageAttendance,
-  getAverageScore,
-  getStudentCount,
-  type Student,
-} from "@/lib/mockData";
+import type { AdminStudent, Student } from "@/lib/mockData";
 
 type MetricIcon = "students" | "score" | "risk" | "attendance";
 
@@ -47,20 +41,38 @@ export function TeacherMetricCards({
   students,
   compact = false,
 }: {
-  students: Student[];
+  students: Array<Student | AdminStudent>;
   compact?: boolean;
 }) {
+  const average = (values: number[]) =>
+    values.length === 0
+      ? 0
+      : values.reduce((total, value) => total + value, 0) / values.length;
+  const scores = students.flatMap((student) =>
+    student.overall_score == null ? [] : [student.overall_score],
+  );
+  const attendance = students.flatMap((student) =>
+    student.attendance_percentage == null
+      ? []
+      : [student.attendance_percentage],
+  );
   const metrics: Array<{
     label: string;
     value: string;
     icon: MetricIcon;
   }> = [
-    { label: "My Students", value: String(getStudentCount(students)), icon: "students" },
-    { label: "Average Score", value: getAverageScore(students).toFixed(1), icon: "score" },
-    { label: "At Risk", value: String(getAtRiskCount(students)), icon: "risk" },
+    { label: "My Students", value: String(students.length), icon: "students" },
+    { label: "Average Score", value: average(scores).toFixed(1), icon: "score" },
+    {
+      label: "At Risk",
+      value: String(
+        students.filter((student) => student.performance_level === "At Risk").length,
+      ),
+      icon: "risk",
+    },
     {
       label: "Average Attendance",
-      value: `${getAverageAttendance(students).toFixed(1)}%`,
+      value: `${average(attendance).toFixed(1)}%`,
       icon: "attendance",
     },
   ];

@@ -1,4 +1,10 @@
-import type { ParentChild, Student, StudentProfile } from "@/lib/mockData";
+import type {
+  AdminClassSummary,
+  AdminStudent,
+  ParentChild,
+  Student,
+  StudentProfile,
+} from "@/lib/mockData";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -71,6 +77,25 @@ function normalizeParentChild(value: Record<string, unknown>): ParentChild {
     final_exam_score: nullableNumber(value.final_exam_score),
     midterm_score: nullableNumber(value.midterm_score),
     participation_score: nullableNumber(value.participation_score),
+  };
+}
+
+function normalizeAdminStudent(value: Record<string, unknown>): AdminStudent {
+  const performanceLevel = value.performance_level;
+
+  return {
+    name: String(value.name ?? value.student_name ?? "Unnamed student"),
+    class_name: typeof value.class_name === "string" ? value.class_name : null,
+    teacher_name:
+      typeof value.teacher_name === "string" ? value.teacher_name : null,
+    overall_score: nullableNumber(value.overall_score),
+    attendance_percentage: nullableNumber(value.attendance_percentage),
+    performance_level:
+      performanceLevel === "At_Risk"
+        ? "At Risk"
+        : performanceLevel === "Average" || performanceLevel === "Good"
+          ? performanceLevel
+          : null,
   };
 }
 
@@ -179,4 +204,66 @@ export async function getParentChildren(
   return payload.children.map((child) =>
     normalizeParentChild(child as Record<string, unknown>),
   );
+}
+
+export async function getSchoolStudents(schoolName: string): Promise<{
+  students: AdminStudent[];
+  classes: AdminClassSummary[];
+}> {
+  if (!apiUrl) {
+    throw new Error("School data is not configured.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `${apiUrl}/admin/${encodeURIComponent(schoolName)}/students`,
+      { cache: "no-store" },
+    );
+  } catch {
+    throw new Error("Could not load school data");
+  }
+
+  const payload = (await response.json().catch(() => null)) as
+    | {
+        students?: unknown;
+        classes?: unknown;
+      }
+    | null;
+
+  if (
+    !response.ok ||
+    !payload ||
+    !Array.isArray(payload.students) ||
+    !Array.isArray(payload.classes)
+  ) {
+    throw new Error("Could not load school data");
+  }
+
+  if (
+    !payload.students.every(
+      (student) => student && typeof student === "object",
+    ) ||
+    !payload.classes.every(
+      (classSummary) => classSummary && typeof classSummary === "object",
+    )
+  ) {
+    throw new Error("Could not load school data");
+  }
+
+  return {
+    students: payload.students.map((student) =>
+      normalizeAdminStudent(student as Record<string, unknown>),
+    ),
+    classes: payload.classes.map((classSummary) => {
+      const value = classSummary as Record<string, unknown>;
+      return {
+        class_name:
+          typeof value.class_name === "string" ? value.class_name : null,
+        student_count: Number(value.student_count ?? 0),
+        average_score: nullableNumber(value.average_score),
+        average_attendance: nullableNumber(value.average_attendance),
+      };
+    }),
+  };
 }

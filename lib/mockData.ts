@@ -46,6 +46,22 @@ export interface ParentChild {
   participation_score: number | null;
 }
 
+export interface AdminStudent {
+  name: string;
+  class_name: string | null;
+  teacher_name: string | null;
+  overall_score: number | null;
+  attendance_percentage: number | null;
+  performance_level: PerformanceLevel | null;
+}
+
+export interface AdminClassSummary {
+  class_name: string | null;
+  student_count: number;
+  average_score: number | null;
+  average_attendance: number | null;
+}
+
 export interface ParentProfile {
   name: string;
   children: StudentProfile[];

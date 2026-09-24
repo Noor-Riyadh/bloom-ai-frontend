@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+  getRoleHomePath,
   loginUser,
   signupUser,
   type UserRole,
@@ -19,25 +20,26 @@ const demoAccounts: Array<{
   label: string;
   email: string;
   password: string;
-  destination: string;
 }> = [
   {
     label: "Login as Teacher",
     email: "SaraHassan1@gmail.com",
     password: "123456",
-    destination: "/home",
   },
   {
     label: "Login as Student",
     email: "AhmedAli1@gmail.com",
     password: "123456",
-    destination: "/student/home",
   },
   {
     label: "Login as Parent",
     email: "ahmed123@gmail.com",
     password: "123456",
-    destination: "/parent/home",
+  },
+  {
+    label: "Login as Admin",
+    email: "NileFuture@gmail.com",
+    password: "123456",
   },
 ];
 
@@ -96,6 +98,7 @@ export default function Home() {
           ? `Welcome, ${response.user.name}! Your account is ready.`
           : `Welcome back, ${response.user.name}!`,
       );
+      router.push(getRoleHomePath(response.user.role));
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
@@ -111,15 +114,14 @@ export default function Home() {
   async function handleDemoLogin(
     email: string,
     password: string,
-    destination: string,
   ) {
     setError("");
     setSuccess("");
     setIsSubmitting(true);
 
     try {
-      await loginUser(email, password);
-      router.push(destination);
+      const response = await loginUser(email, password);
+      router.push(getRoleHomePath(response.user.role));
     } catch (caughtError) {
       setError(
         caughtError instanceof Error
@@ -243,7 +245,7 @@ export default function Home() {
             <p className="text-center text-[12px] font-semibold uppercase tracking-[0.5px] text-[#777]">
               Demo Accounts
             </p>
-            <div className="mt-[12px] grid grid-cols-3 gap-2">
+            <div className="mt-[12px] grid grid-cols-4 gap-2">
               {demoAccounts.map((account) => (
                 <button
                   key={account.email}
@@ -253,7 +255,6 @@ export default function Home() {
                     handleDemoLogin(
                       account.email,
                       account.password,
-                      account.destination,
                     )
                   }
                   className="min-h-[36px] rounded-[8px] border border-[#d9b6ea] bg-[#fcf8ff] px-2 py-1 text-[11px] font-semibold leading-tight text-[#8b10c6] transition hover:border-[#a400ff] hover:bg-[#f4e6ff] focus:outline-none focus:ring-2 focus:ring-[#d64cf1] disabled:cursor-wait disabled:opacity-60"
