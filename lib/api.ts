@@ -1,8 +1,14 @@
 import type {
   AdminClassSummary,
   AdminStudent,
+  Assignment,
+  AssignmentQuestion,
+  AssignmentQuestionGrade,
+  AssignmentQuestionSummary,
+  AssignmentSubmission,
   ParentChild,
   Student,
+  StudentAssignment,
   StudentProfile,
 } from "@/lib/mockData";
 
@@ -96,6 +102,96 @@ function normalizeAdminStudent(value: Record<string, unknown>): AdminStudent {
         : performanceLevel === "Average" || performanceLevel === "Good"
           ? performanceLevel
           : null,
+  };
+}
+
+function normalizeAssignment(value: Record<string, unknown>): Assignment {
+  return {
+    id: Number(value.id ?? 0),
+    title: String(value.title ?? "Untitled assignment"),
+    subject: typeof value.subject === "string" ? value.subject : null,
+    created_at: String(value.created_at ?? ""),
+  };
+}
+
+function normalizeStudentAssignment(
+  value: Record<string, unknown>,
+): StudentAssignment {
+  return {
+    ...normalizeAssignment(value),
+    status: String(value.status ?? "Pending"),
+  };
+}
+
+function normalizeAssignmentQuestion(
+  value: Record<string, unknown>,
+): AssignmentQuestionSummary {
+  return {
+    id: Number(value.id ?? 0),
+    question_order: Number(value.question_order ?? 0),
+    question: String(value.question ?? ""),
+    max_points: Number(value.max_points ?? 0),
+  };
+}
+
+function parseObject(value: unknown): Record<string, unknown> {
+  if (value && typeof value === "object") {
+    return value as Record<string, unknown>;
+  }
+  if (typeof value === "string") {
+    try {
+      const parsed: unknown = JSON.parse(value);
+      return parsed && typeof parsed === "object"
+        ? (parsed as Record<string, unknown>)
+        : {};
+    } catch {
+      return {};
+    }
+  }
+  return {};
+}
+
+function normalizeSubmission(value: Record<string, unknown>): AssignmentSubmission {
+  const rawGrading = parseObject(value.grading ?? value.grading_json);
+  const rawQuestions = Array.isArray(rawGrading.questions)
+    ? rawGrading.questions
+    : Array.isArray(value.questions)
+      ? value.questions
+      : [];
+  const questions: AssignmentQuestionGrade[] = rawQuestions
+    .filter((question) => question && typeof question === "object")
+    .map((question) => {
+      const item = question as Record<string, unknown>;
+      return {
+        question_number: Number(item.question_number ?? item.question_order ?? 0),
+        points_awarded: Number(item.points_awarded ?? 0),
+        max_points: Number(item.max_points ?? 0),
+        feedback: String(item.feedback ?? item.overall_feedback ?? "—"),
+      };
+    });
+
+  const submittedAt = value.submitted_at ?? value.submittedAt;
+
+  return {
+    answers: Array.isArray(value.answers)
+      ? value.answers.map((answer) => String(answer))
+      : [],
+    grading: {
+      questions,
+      overall_feedback: String(
+        rawGrading.overall_feedback ??
+          rawGrading.feedback ??
+          value.overall_feedback ??
+          "—",
+      ),
+      earned_points: Number(rawGrading.earned_points ?? value.earned_points ?? 0),
+      max_points: Number(rawGrading.max_points ?? value.max_points ?? 0),
+      percentage: Number(rawGrading.percentage ?? value.percentage ?? 0),
+    },
+    earned_points: Number(value.earned_points ?? 0),
+    max_points: Number(value.max_points ?? 0),
+    percentage: Number(value.percentage ?? 0),
+    submitted_at: typeof submittedAt === "string" ? submittedAt : "",
   };
 }
 
@@ -318,4 +414,228 @@ export async function generateLearningPlan(
   }
 
   return payload.plan;
+}
+
+export async function createAssignment(
+  teacherName: string,
+  title: string,
+  subject: string,
+  instructions: string,
+  questions: AssignmentQuestion[],
+): Promise<Assignment> {
+  if (!apiUrl) {
+    throw new Error("Assignment service is not configured.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`${apiUrl}/assignments/create`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        teacher_name: teacherName,
+        title,
+        subject,
+        instructions,
+        questions,
+      }),
+    });
+  } catch {
+    throw new Error(
+      "Could not connect to the assignment service. Please try again.",
+    );
+  }
+
+  const payload = (await response.json().catch(() => null)) as
+    | {
+        success?: boolean;
+        assignment?: Record<string, unknown>;
+        detail?: string;
+      }
+    | null;
+
+  if (!response.ok) {
+    throw new Error(
+      payload?.detail || "Could not create the assignment. Please try again.",
+    );
+  }
+
+  if (
+    !payload ||
+    payload.success !== true ||
+    !payload.assignment ||
+    typeof payload.assignment !== "object"
+  ) {
+    throw new Error("The assignment service returned an invalid response.");
+  }
+
+  return normalizeAssignment(payload.assignment);
+}
+
+export async function getTeacherAssignments(
+  teacherName: string,
+): Promise<Assignment[]> {
+  if (!apiUrl) {
+    throw new Error("Assignment service is not configured.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `${apiUrl}/assignments/teacher/${encodeURIComponent(teacherName)}`,
+      { cache: "no-store" },
+    );
+  } catch {
+    throw new Error("Could not load assignments");
+  }
+
+  const payload = (await response.json().catch(() => null)) as unknown;
+
+  if (
+    !response.ok ||
+    !Array.isArray(payload) ||
+    !payload.every((assignment) => assignment && typeof assignment === "object")
+  ) {
+    throw new Error("Could not load assignments");
+  }
+
+  return payload.map((assignment) =>
+    normalizeAssignment(assignment as Record<string, unknown>),
+  );
+}
+
+export async function getStudentAssignments(
+  studentName: string,
+): Promise<StudentAssignment[]> {
+  if (!apiUrl) {
+    throw new Error("Assignment service is not configured.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `${apiUrl}/assignments/student/${encodeURIComponent(studentName)}`,
+      { cache: "no-store" },
+    );
+  } catch {
+    throw new Error("Could not load assignments");
+  }
+
+  const payload = (await response.json().catch(() => null)) as unknown;
+  if (
+    !response.ok ||
+    !Array.isArray(payload) ||
+    !payload.every((assignment) => assignment && typeof assignment === "object")
+  ) {
+    throw new Error("Could not load assignments");
+  }
+
+  return payload.map((assignment) =>
+    normalizeStudentAssignment(assignment as Record<string, unknown>),
+  );
+}
+
+export async function getAssignmentQuestions(
+  assignmentId: number,
+): Promise<AssignmentQuestionSummary[]> {
+  if (!apiUrl) {
+    throw new Error("Assignment service is not configured.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `${apiUrl}/assignments/${assignmentId}/questions`,
+      { cache: "no-store" },
+    );
+  } catch {
+    throw new Error("Could not load assignment questions");
+  }
+
+  const payload = (await response.json().catch(() => null)) as unknown;
+  if (
+    !response.ok ||
+    !Array.isArray(payload) ||
+    !payload.every((question) => question && typeof question === "object")
+  ) {
+    throw new Error("Could not load assignment questions");
+  }
+
+  return payload.map((question) =>
+    normalizeAssignmentQuestion(question as Record<string, unknown>),
+  );
+}
+
+export async function submitAssignment(
+  assignmentId: number,
+  studentName: string,
+  answers: string[],
+): Promise<AssignmentSubmission> {
+  if (!apiUrl) {
+    throw new Error("Assignment service is not configured.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(`${apiUrl}/assignments/${assignmentId}/submit`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ student_name: studentName, answers }),
+    });
+  } catch {
+    throw new Error(
+      "Could not connect to the grading service. Please try again.",
+    );
+  }
+
+  const payload = (await response.json().catch(() => null)) as
+    | Record<string, unknown>
+    | null;
+  if (!response.ok || !payload || typeof payload !== "object") {
+    const detail = payload?.detail;
+    throw new Error(
+      typeof detail === "string"
+        ? detail
+        : "Could not grade the assignment. Please try again.",
+    );
+  }
+
+  return normalizeSubmission(payload);
+}
+
+export async function getAssignmentSubmission(
+  assignmentId: number,
+  studentName: string,
+): Promise<AssignmentSubmission> {
+  if (!apiUrl) {
+    throw new Error("Assignment service is not configured.");
+  }
+
+  let response: Response;
+  try {
+    response = await fetch(
+      `${apiUrl}/assignments/${assignmentId}/submission/${encodeURIComponent(studentName)}`,
+      { cache: "no-store" },
+    );
+  } catch {
+    throw new Error("Could not load assignment submission");
+  }
+
+  const payload = (await response.json().catch(() => null)) as
+    | Record<string, unknown>
+    | null;
+  if (!response.ok || !payload || typeof payload !== "object") {
+    const detail = payload?.detail;
+    throw new Error(
+      typeof detail === "string"
+        ? detail
+        : "Could not load assignment submission",
+    );
+  }
+
+  return normalizeSubmission(payload);
 }

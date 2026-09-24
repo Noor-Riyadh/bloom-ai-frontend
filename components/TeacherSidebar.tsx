@@ -40,6 +40,15 @@ function DashboardIcon() {
   );
 }
 
+function AssignmentIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+      <path d="M6 3h9l3 3v15H6V3Z" />
+      <path d="M14 3v4h4M9 11h6M9 15h6M9 19h4" />
+    </svg>
+  );
+}
+
 function SparkleIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -174,6 +183,16 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
             <NavIcon><DashboardIcon /></NavIcon>
             {!collapsed && "Dashboard"}
           </Link>}
+          {!isStudent && !isParent && !isAdmin && <Link
+            className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
+              collapsed ? "justify-center" : "gap-4"
+            }`}
+            href="/assignments"
+            title={collapsed ? "Assignments" : undefined}
+          >
+            <NavIcon><AssignmentIcon /></NavIcon>
+            {!collapsed && "Assignments"}
+          </Link>}
           {isStudent && <Link
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
               collapsed ? "justify-center" : "gap-4"
@@ -183,6 +202,16 @@ export function TeacherSidebar({ role = "teacher" }: TeacherSidebarProps) {
           >
             <NavIcon><DashboardIcon /></NavIcon>
             {!collapsed && "My Learning"}
+          </Link>}
+          {isStudent && <Link
+            className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${
+              collapsed ? "justify-center" : "gap-4"
+            }`}
+            href="/student/assignments"
+            title={collapsed ? "Assignments" : undefined}
+          >
+            <NavIcon><AssignmentIcon /></NavIcon>
+            {!collapsed && "Assignments"}
           </Link>}
           {isParent && <Link
             className={`flex items-center text-base font-semibold hover:text-[#c319f4] ${

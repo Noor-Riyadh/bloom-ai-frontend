@@ -62,6 +62,52 @@ export interface AdminClassSummary {
   average_attendance: number | null;
 }
 
+export interface AssignmentQuestion {
+  question: string;
+  model_answer: string;
+  max_points: number;
+}
+
+export interface Assignment {
+  id: number;
+  title: string;
+  subject: string | null;
+  created_at: string;
+}
+
+export interface StudentAssignment extends Assignment {
+  status: string;
+}
+
+export interface AssignmentQuestionSummary {
+  id: number;
+  question_order: number;
+  question: string;
+  max_points: number;
+}
+
+export interface AssignmentQuestionGrade {
+  question_number: number;
+  points_awarded: number;
+  max_points: number;
+  feedback: string;
+}
+
+export interface AssignmentSubmission {
+  answers: string[];
+  grading: {
+    questions: AssignmentQuestionGrade[];
+    overall_feedback: string;
+    earned_points: number;
+    max_points: number;
+    percentage: number;
+  };
+  earned_points: number;
+  max_points: number;
+  percentage: number;
+  submitted_at: string;
+}
+
 export interface ParentProfile {
   name: string;
   children: StudentProfile[];
